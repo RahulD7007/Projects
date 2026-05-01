@@ -3,9 +3,9 @@ import oracledb
 
 # Connect using service name
 con = oracledb.connect(
-    user="BANK",
+    user="bank_modern",
     password="bank",
-    dsn="localhost:1521/XEPDB1"   # host:port/service_name
+    dsn="localhost:1521/FREEPDB1"   # host:port/service_name
 )
 
 print("✅ Connected to Oracle 18c!")
