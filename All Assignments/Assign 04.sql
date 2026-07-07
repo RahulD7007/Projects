@@ -135,12 +135,12 @@ INSERT INTO employee_experience VALUES (104, 'Ernst',   17, 119, 10);
 INSERT INTO employee_experience VALUES (105, 'Austin',  20, 142, 12);
 
 
--- Q1: Write a query to display the Full name only those employees whose first name start with ‘S’ character.
+-- Q1: Write a query to display the Full name only those employees whose first name start with ï¿½Sï¿½ character.
 
         SELECT Full_Name FROM EMPLOYEE_T 
         WHERE Full_Name LIKE 'S%';
 
--- If this then, Write a query to display the Full name only those employees whose Last name start with ‘S’ character.
+-- If this then, Write a query to display the Full name only those employees whose Last name start with ï¿½Sï¿½ character.
 
        SELECT Full_Name FROM EMPLOYEE_T
        WHERE SUBSTR(Full_Name, INSTR(Full_Name, '.') + 1, 1) = 'S';
@@ -343,3 +343,7 @@ JOIN employees m
   ON e.manager_id = m.employee_id
 GROUP BY e.manager_id, m.first_name, m.last_name
 ORDER BY number_of_employees DESC;
+
+
+
+

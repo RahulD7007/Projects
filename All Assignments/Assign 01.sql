@@ -5,7 +5,7 @@ CREATE TABLE Employee_Table
        Employee_id NUMBER,
        Full_Name VARCHAR2(50),
        Email VARCHAR2(50),
-       Salary NUMBER
+       Salary NUMBER,
               
        SNUM NUMBER CONSTRAINT PK_SNUM PRIMARY KEY,
        SNAME VARCHAR2(20),
@@ -55,7 +55,5 @@ group by to_char(hire_date,'yyyy')
 order by 1;
 
 -- Q7. Display Manager_id , Manager Full Name and Under number of employees only those managers how have more than 5 employees under working. Result sort by manager_ID
-
-
 
 
