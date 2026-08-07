@@ -1,11 +1,11 @@
 .PHONY: venv data features train predict reports api test lint format clean all
 
-python := python3 -u
-venv_python := .venv/bin/python3
+python := python -u
+venv_python := .venv/bin/python
 
 ## Set up virtual environment and install dependencies
 venv:
-	python3 -m venv .venv
+	python -m venv .venv
 	.venv/bin/pip install --upgrade pip
 	.venv/bin/pip install -r requirements.txt pytest ruff
 
@@ -35,11 +35,11 @@ api:
 
 ## Run automated pytest unit & integration test suite
 test:
-	.venv/bin/pytest tests/ -v
+	python -m pytest tests/ -v
 
 ## Lint codebase using Ruff
 lint:
-	.venv/bin/ruff check src/ tests/
+	python -m ruff check src/ tests/
 
 ## Execute full end-to-end pipeline
 all: data features train predict reports api
