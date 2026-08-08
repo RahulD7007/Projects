@@ -1,153 +1,209 @@
+"""
+features.py
+───────────
+Feature engineering and scikit-learn preprocessing pipeline.
+(Logging added via src.logger)
+"""
+
+from __future__ import annotations
+
+import sys
+
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, RobustScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from src.config import (
-    BINARY_FEATURES,
+    BINARY_FLAG_FEATURES,
     CATEGORICAL_FEATURES,
-    DROP_FEATURES,
-    NUMERICAL_FEATURES,
-    PROCESSED_DATA_DIR,
+    ID_COL,
+    LEAKAGE_COLS,
+    MISSINGNESS_FLAG_COLS,
+    NUMERIC_FEATURES,
+    RANDOM_STATE,
+    RAW_DATA_PATH,
     TARGET_COL,
     TEST_PROCESSED_PATH,
+    TEST_SIZE,
     TRAIN_PROCESSED_PATH,
 )
 from src.dataset import load_raw_data
+from src.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def execute_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Execute production domain feature engineering.
-    
-    Creates:
-    1. Missingness indicator flags for pre-decision features.
-    2. Calculated financial leverage and debt capacity ratios.
-    3. Ordinal integer encodings.
+    Apply all deterministic feature-engineering transformations.
+
+    Steps
+    ─────
+    1. Drop leakage + ID columns.
+    2. Create binary missingness flags.
+    3. Construct DTI_x_LTV compound feature.
+    4. Construct loan_to_income affordability ratio.
     """
-    df_fe = df.copy()
+    logger.debug("Starting feature engineering | shape=%s", df.shape)
+    df = df.copy()
 
-    # 1. Missingness Indicator Flags
-    df_fe['property_value_isna'] = df_fe['property_value'].isnull().astype(int) if 'property_value' in df_fe else 0
-    df_fe['dtir1_isna'] = df_fe['dtir1'].isnull().astype(int) if 'dtir1' in df_fe else 0
-    df_fe['income_isna'] = df_fe['income'].isnull().astype(int) if 'income' in df_fe else 0
-    df_fe['LTV_isna'] = df_fe['LTV'].isnull().astype(int) if 'LTV' in df_fe else 0
+    # ── 1. Drop leakage + identifier ─────────────────────────────────────────
+    drop_cols = [c for c in LEAKAGE_COLS + [ID_COL] if c in df.columns]
+    if drop_cols:
+        df.drop(columns=drop_cols, inplace=True)
+        logger.debug("Dropped columns: %s", drop_cols)
 
-    # Helpers for safe division
-    income_monthly = (df_fe['income'] / 12.0).replace(0, np.nan) if 'income' in df_fe else np.nan
-    term_months = df_fe['term'].replace(0, np.nan) if 'term' in df_fe else np.nan
+    # ── 2. Missingness flags ──────────────────────────────────────────────────
+    for col in MISSINGNESS_FLAG_COLS:
+        if col in df.columns:
+            flag_col = f"{col}_isna"
+            df[flag_col] = df[col].isna().astype(np.int8)
+            n_missing = df[flag_col].sum()
+            logger.debug(
+                "Flag '%s' created | %d missing (%.1f%%)",
+                flag_col, n_missing,
+                100 * n_missing / len(df),
+            )
 
-    # 2. Calculated Financial Ratios
-    if 'loan_amount' in df_fe and 'term' in df_fe:
-        df_fe['Est_Monthly_Payment'] = df_fe['loan_amount'] / term_months
-        if 'income' in df_fe:
-            df_fe['Payment_to_Income'] = df_fe['Est_Monthly_Payment'] / income_monthly
-            df_fe['Loan_to_Income'] = df_fe['loan_amount'] / (df_fe['income'] + 1.0)
+    # ── 3. DTI × LTV compound feature ────────────────────────────────────────
+    if "dtir1" in df.columns and "LTV" in df.columns:
+        df["DTI_x_LTV"] = df["dtir1"] * df["LTV"]
+        logger.debug("Feature 'DTI_x_LTV' created.")
 
-    if 'loan_amount' in df_fe and 'property_value' in df_fe:
-        df_fe['LTV_calculated'] = (df_fe['loan_amount'] / (df_fe['property_value'] + 1.0)) * 100.0
+    # ── 4. Loan-to-income ratio ───────────────────────────────────────────────
+    if "loan_amount" in df.columns and "income" in df.columns:
+        df["loan_to_income"] = df["loan_amount"] / \
+            df["income"].replace(0, np.nan)
+        logger.debug("Feature 'loan_to_income' created.")
 
-    if 'dtir1' in df_fe and 'LTV' in df_fe:
-        df_fe['DTI_x_LTV'] = df_fe['dtir1'] * df_fe['LTV']
+    logger.info("Feature engineering complete | output shape=%s", df.shape)
+    return df
 
-    # 3. Ordinal Encodings
-    if 'age' in df_fe:
-        age_map = {'<25': 1, '25-34': 2, '35-44': 3, '45-54': 4, '55-64': 5, '65-74': 6, '>74': 7}
-        df_fe['age_ordinal'] = df_fe['age'].map(age_map).fillna(3)
 
-    if 'total_units' in df_fe:
-        units_map = {'1U': 1, '2U': 2, '3U': 3, '4U': 4}
-        df_fe['total_units_ordinal'] = df_fe['total_units'].map(units_map).fillna(1)
-
-    return df_fe
-
-def build_preprocessing_pipeline(num_cols: list, cat_cols: list, bin_cols: list) -> ColumnTransformer:
+def build_preprocessing_pipeline() -> ColumnTransformer:
     """
-    Build a scikit-learn ColumnTransformer preprocessing pipeline.
+    Construct a scikit-learn ColumnTransformer with three sub-pipelines.
+
+    Returns
+    -------
+    ColumnTransformer
+        Unfitted transformer.
     """
-    num_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='median')),
-        ('scaler', RobustScaler())
+    numeric_pipeline = Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler",  StandardScaler()),
+    ])
+    binary_pipeline = Pipeline([
+        ("imputer", SimpleImputer(strategy="constant", fill_value=0)),
+    ])
+    categorical_pipeline = Pipeline([
+        ("imputer", SimpleImputer(strategy="most_frequent")),
+        (
+            "encoder",
+            OneHotEncoder(
+                handle_unknown="ignore",
+                sparse_output=False,
+                dtype=np.float32,
+            ),
+        ),
     ])
 
-    cat_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='most_frequent')),
-        ('onehot', OneHotEncoder(drop='first', handle_unknown='ignore', sparse_output=False))
-    ])
-
-    bin_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='most_frequent'))
-    ])
-
-    preprocessor = ColumnTransformer(transformers=[
-        ('num', num_transformer, num_cols),
-        ('cat', cat_transformer, cat_cols),
-        ('bin', bin_transformer, bin_cols)
-    ])
-
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("numeric",     numeric_pipeline,     NUMERIC_FEATURES),
+            ("binary",      binary_pipeline,      BINARY_FLAG_FEATURES),
+            ("categorical", categorical_pipeline, CATEGORICAL_FEATURES),
+        ],
+        remainder="drop",
+        verbose_feature_names_out=False,
+    )
+    logger.debug("Preprocessing pipeline constructed.")
     return preprocessor
 
-def create_processed_datasets():
-    """
-    Load raw data, run feature engineering, fit pipeline on X_train, and export train/test artifacts.
-    """
-    PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+def run_preprocessing_pipeline(
+    df_engineered: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Split data, fit the ColumnTransformer on training fold only,
+    transform both folds, and return labelled DataFrames.
+    """
+    X = df_engineered.drop(columns=[TARGET_COL])
+    y = df_engineered[TARGET_COL]
+
+    logger.debug(
+        "Splitting data | test_size=%.2f | random_state=%d",
+        TEST_SIZE, RANDOM_STATE,
+    )
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=TEST_SIZE,
+        stratify=y,
+        random_state=RANDOM_STATE,
+    )
+    logger.info(
+        "Train=%d samples | Test=%d samples", len(X_train), len(X_test)
+    )
+
+    preprocessor = build_preprocessing_pipeline()
+    logger.debug("Fitting ColumnTransformer on training data only...")
+    X_train_arr = preprocessor.fit_transform(X_train)
+    X_test_arr = preprocessor.transform(X_test)
+
+    feature_names: list[str] = preprocessor.get_feature_names_out().tolist()
+    logger.info("Preprocessing complete | %d features generated.",
+                len(feature_names))
+
+    train_processed = pd.DataFrame(
+        X_train_arr, columns=feature_names, index=y_train.index
+    )
+    train_processed[TARGET_COL] = y_train.values
+
+    test_processed = pd.DataFrame(
+        X_test_arr, columns=feature_names, index=y_test.index
+    )
+    test_processed[TARGET_COL] = y_test.values
+
+    return train_processed, test_processed
+
+
+def main() -> None:
+    logger.info("Feature engineering pipeline started.")
     print("Loading raw dataset...")
     df_raw = load_raw_data()
 
     print("Executing feature engineering...")
     df_engineered = execute_feature_engineering(df_raw)
 
-    # Drop identified non-useful and leakage features
-    cols_to_drop = [c for c in DROP_FEATURES if c in df_engineered.columns]
-    df_clean = df_engineered.drop(columns=cols_to_drop)
-
-    # Separate features and target
-    X = df_clean.drop(columns=[TARGET_COL])
-    y = df_clean[TARGET_COL]
-
-    # Filter available column lists
-    num_cols = [c for c in NUMERICAL_FEATURES if c in X.columns]
-    bin_cols = [c for c in BINARY_FEATURES if c in X.columns]
-    cat_cols = [c for c in CATEGORICAL_FEATURES if c in X.columns]
-
-    # Build preprocessing pipeline
-    preprocessor = build_preprocessing_pipeline(num_cols, cat_cols, bin_cols)
-
-    # Stratified 80/20 train/test split
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42, stratify=y
-    )
-
     print("Fitting preprocessing pipeline on training split...")
-    X_train_proc = preprocessor.fit_transform(X_train)
-    X_test_proc = preprocessor.transform(X_test)
+    train_df, test_df = run_preprocessing_pipeline(df_engineered)
 
-    # Extract feature names
-    cat_onehot_names = preprocessor.named_transformers_['cat'].named_steps['onehot'].get_feature_names_out(cat_cols)
-    final_feature_names = num_cols + list(cat_onehot_names) + bin_cols
+    train_df.to_csv(TRAIN_PROCESSED_PATH, index=False)
+    test_df.to_csv(TEST_PROCESSED_PATH, index=False)
 
-    # Build processed DataFrames
-    df_train_proc = pd.DataFrame(X_train_proc, columns=final_feature_names)
-    df_train_proc[TARGET_COL] = y_train.values
-
-    df_test_proc = pd.DataFrame(X_test_proc, columns=final_feature_names)
-    df_test_proc[TARGET_COL] = y_test.values
-
-    # Save CSV artifacts
-    df_train_proc.to_csv(TRAIN_PROCESSED_PATH, index=False)
-    df_test_proc.to_csv(TEST_PROCESSED_PATH, index=False)
-
-    print("="*80)
+    sep = "=" * 80
+    print(sep)
     print("FEATURE ENGINEERING & PREPROCESSING COMPLETE")
-    print("="*80)
-    print(f"Train Artifact: '{TRAIN_PROCESSED_PATH}' ({df_train_proc.shape[0]:,} rows x {df_train_proc.shape[1]} cols)")
-    print(f"Test Artifact:  '{TEST_PROCESSED_PATH}' ({df_test_proc.shape[0]:,} rows x {df_test_proc.shape[1]} cols)")
-    print("="*80)
+    print(sep)
+    print(
+        f"Train Artifact: '{TRAIN_PROCESSED_PATH}' "
+        f"({train_df.shape[0]:,} rows x {train_df.shape[1]} cols)"
+    )
+    print(
+        f"Test Artifact:  '{TEST_PROCESSED_PATH}' "
+        f"({test_df.shape[0]:,} rows x {test_df.shape[1]} cols)"
+    )
+    print(sep)
+    logger.info("Feature engineering pipeline complete.")
 
-if __name__ == '__main__':
-    create_processed_datasets()
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as exc:
+        logger.critical("Feature pipeline failed: %s", exc, exc_info=True)
+        sys.exit(1)

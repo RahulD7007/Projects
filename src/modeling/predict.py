@@ -1,49 +1,114 @@
-import pathlib
+"""
+modeling/predict.py
+───────────────────
+Inference engine: loads a serialized or registered model and scores
+new observations.
+"""
 
-import joblib
+from __future__ import annotations
+
+from pathlib import Path
+
+import numpy as np
 import pandas as pd
 
-from src.config import MODEL_PATH, TARGET_COL, TEST_PROCESSED_PATH
+from src.config import DECISION_THRESHOLD, MODEL_PATH, TARGET_COL
+from src.logger import get_logger
+
+logger = get_logger(__name__)
 
 
-def predict_default_probability(data_path: pathlib.Path = TEST_PROCESSED_PATH, model_path: pathlib.Path = MODEL_PATH) -> pd.DataFrame:
+def load_model(path: Path = MODEL_PATH) -> object:
     """
-    Load trained classifier model and predict probability of default on input features.
-    
+    Load a serialized model artifact from a direct file path.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the ``.joblib`` file.
+
+    Returns
+    -------
+    object
+        Fitted scikit-learn / XGBoost estimator.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the artifact is absent from disk.
+    """
+    import joblib
+
+    if not path.exists():
+        logger.error("Model artifact not found at '%s'", path)
+        raise FileNotFoundError(
+            f"Model artifact not found at '{path}'. "
+            "Run `make train` to generate it."
+        )
+    logger.info("Loading model artifact from '%s'", path)
+    return joblib.load(path)
+
+
+def load_champion(model_name: str) -> object:
+    """
+    Load the current champion model from the versioning registry.
+
+    Parameters
+    ----------
+    model_name : str
+        Logical model name (e.g. ``"random_forest"``).
+
+    Returns
+    -------
+    object
+        Deserialized fitted estimator.
+    """
+    from src.versioning import load_champion_model
+    logger.info("Loading champion model: '%s'", model_name)
+    return load_champion_model(model_name)
+
+
+def predict_proba(
+    model: object,
+    df: pd.DataFrame,
+    threshold: float = DECISION_THRESHOLD,
+) -> pd.DataFrame:
+    """
+    Generate default probabilities and binary predictions.
+
+    Parameters
+    ----------
+    model : object
+        Fitted classifier with ``predict_proba``.
+    df : pd.DataFrame
+        Processed feature DataFrame (target column dropped if present).
+    threshold : float
+        Classification cutoff (default 0.50).
+
     Returns
     -------
     pd.DataFrame
-        DataFrame with predictions attached.
+        Two-column frame: ``Predicted_Default_Prob``, ``Predicted_Status``.
     """
-    if not model_path.exists():
-        raise FileNotFoundError(f"Model file not found at {model_path}. Run 'make train' first.")
+    X = df.drop(columns=[TARGET_COL], errors="ignore").values
 
-    if not data_path.exists():
-        raise FileNotFoundError(f"Data file not found at {data_path}.")
+    logger.debug(
+        "Running inference on %d samples with threshold=%.2f",
+        len(X), threshold,
+    )
 
-    model = joblib.load(model_path)
-    df = pd.read_csv(data_path)
+    proba: np.ndarray = model.predict_proba(X)[:, 1]
+    labels = (proba >= threshold).astype(int)
 
-    if TARGET_COL in df.columns:
-        X = df.drop(columns=[TARGET_COL])
-    else:
-        X = df
+    logger.debug(
+        "Inference complete | mean_prob=%.4f | predicted_defaults=%d",
+        proba.mean(),
+        labels.sum(),
+    )
 
-    probabilities = model.predict_proba(X)[:, 1]
-    predictions = (probabilities >= 0.50).astype(int)
-
-    df_results = df.copy()
-    df_results['Predicted_Default_Prob'] = probabilities
-    df_results['Predicted_Status'] = predictions
-
-    return df_results
-
-if __name__ == '__main__':
-    print("="*60)
-    print("BATCH PREDICTION INFERENCE")
-    print("="*60)
-    results = predict_default_probability()
-    print(f"Evaluated {len(results):,} sample applications.")
-    print("Sample Prediction Output:")
-    print(results[['Predicted_Default_Prob', 'Predicted_Status']].head(10))
-    print("="*60)
+    return pd.DataFrame(
+        {
+            "Predicted_Default_Prob": proba,
+            "Predicted_Status": labels,
+        }
+    )

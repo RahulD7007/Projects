@@ -1,62 +1,288 @@
-import joblib
+"""
+modeling/train.py
+─────────────────
+Model training, evaluation, and serialization engine.
+
+Supports
+────────
+• Logistic Regression  (interpretable baseline)
+• Random Forest        (ensemble baseline)
+• XGBoost              (gradient-boosted trees)
+
+All trained models are automatically registered in the versioning
+registry via src/versioning.py.
+"""
+
+from __future__ import annotations
+
+import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import average_precision_score, roc_auc_score
+from sklearn.metrics import (
+    accuracy_score,
+    average_precision_score,
+    f1_score,
+    roc_auc_score,
+)
+from xgboost import XGBClassifier
 
-from src.config import MODEL_PATH, MODELS_DIR, TARGET_COL, TEST_PROCESSED_PATH, TRAIN_PROCESSED_PATH
+from src.config import (
+    LR_PARAMS,
+    MODEL_NAME_LR,
+    MODEL_NAME_RF,
+    MODEL_NAME_XGB,
+    RF_PARAMS,
+    TARGET_COL,
+    XGB_PARAMS,
+)
+from src.logger import get_logger
+from src.versioning import register_model
+
+logger = get_logger(__name__)
 
 
-def train_baseline_models():
+# ─────────────────────────────────────────────────────────────────────────────
+# INTERNAL HELPERS
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _split_xy(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
+    """Return (X, y) numpy arrays from a processed DataFrame."""
+    X = df.drop(columns=[TARGET_COL]).values
+    y = df[TARGET_COL].values
+    return X, y
+
+
+def _evaluate(
+    model: object,
+    X_test: np.ndarray,
+    y_test: np.ndarray,
+) -> dict[str, float]:
     """
-    Load processed train/test datasets, train baseline classifiers, evaluate performance, and serialize model.
+    Compute standard binary-classification metrics.
+
+    Parameters
+    ----------
+    model : object
+        Fitted classifier with ``predict_proba`` and ``predict``.
+    X_test : np.ndarray
+        Feature matrix.
+    y_test : np.ndarray
+        Ground-truth labels.
+
+    Returns
+    -------
+    dict[str, float]
+        Keys: ``roc_auc``, ``pr_auc``, ``accuracy``, ``f1_score``.
     """
-    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    y_prob = model.predict_proba(X_test)[:, 1]
+    y_pred = (y_prob >= 0.5).astype(int)
 
-    print("Loading processed dataset artifacts...")
-    if not TRAIN_PROCESSED_PATH.exists() or not TEST_PROCESSED_PATH.exists():
-        from src.features import create_processed_datasets
-        create_processed_datasets()
+    metrics = {
+        "roc_auc":  round(float(roc_auc_score(y_test, y_prob)), 4),
+        "pr_auc":   round(float(average_precision_score(y_test, y_prob)), 4),
+        "accuracy": round(float(accuracy_score(y_test, y_pred)), 4),
+        "f1_score": round(float(f1_score(y_test, y_pred)), 4),
+    }
 
-    df_train = pd.read_csv(TRAIN_PROCESSED_PATH)
-    df_test = pd.read_csv(TEST_PROCESSED_PATH)
+    logger.debug("Evaluation metrics: %s", metrics)
+    return metrics
 
-    X_tr = df_train.drop(columns=[TARGET_COL])
-    y_tr = df_train[TARGET_COL]
 
-    X_te = df_test.drop(columns=[TARGET_COL])
-    y_te = df_test[TARGET_COL]
+# ─────────────────────────────────────────────────────────────────────────────
+# PUBLIC TRAINING FUNCTIONS
+# ─────────────────────────────────────────────────────────────────────────────
 
-    # 1. Train Logistic Regression
-    print("Training Logistic Regression Classifier...")
-    lr_model = LogisticRegression(max_iter=1000, random_state=42, class_weight='balanced')
-    lr_model.fit(X_tr, y_tr)
-    lr_preds = lr_model.predict_proba(X_te)[:, 1]
+def train_logistic_regression(
+    train_df: pd.DataFrame,
+    test_df: pd.DataFrame,
+    register: bool = True,
+    promote_to_champion: bool = False,
+) -> tuple[LogisticRegression, dict[str, float], str]:
+    """
+    Fit Logistic Regression and optionally register in the model registry.
 
-    lr_auc = roc_auc_score(y_te, lr_preds)
-    lr_prauc = average_precision_score(y_te, lr_preds)
+    Parameters
+    ----------
+    train_df : pd.DataFrame
+        Processed training DataFrame.
+    test_df : pd.DataFrame
+        Processed test DataFrame.
+    register : bool
+        Whether to register this run in the versioning registry.
+    promote_to_champion : bool
+        Whether to promote this version as champion.
 
-    # 2. Train Random Forest
-    print("Training Random Forest Classifier...")
-    rf_model = RandomForestClassifier(
-        n_estimators=100, max_depth=12, random_state=42, class_weight='balanced', n_jobs=-1
+    Returns
+    -------
+    tuple[LogisticRegression, dict, str]
+        ``(fitted_model, metrics_dict, version_tag)``
+    """
+    logger.info("Training Logistic Regression | params=%s", LR_PARAMS)
+    X_train, y_train = _split_xy(train_df)
+    X_test, y_test = _split_xy(test_df)
+
+    model = LogisticRegression(**LR_PARAMS)
+    model.fit(X_train, y_train)
+    logger.info("Logistic Regression training complete.")
+
+    metrics = _evaluate(model, X_test, y_test)
+    logger.info(
+        "LR Results → ROC-AUC: %.4f | PR-AUC: %.4f | "
+        "Accuracy: %.4f | F1: %.4f",
+        metrics["roc_auc"], metrics["pr_auc"],
+        metrics["accuracy"], metrics["f1_score"],
     )
-    rf_model.fit(X_tr, y_tr)
-    rf_preds = rf_model.predict_proba(X_te)[:, 1]
 
-    rf_auc = roc_auc_score(y_te, rf_preds)
-    rf_prauc = average_precision_score(y_te, rf_preds)
+    version = "not_registered"
+    if register:
+        version = register_model(
+            model=model,
+            model_name=MODEL_NAME_LR,
+            metrics=metrics,
+            params=LR_PARAMS,
+            n_train=len(train_df),
+            n_test=len(test_df),
+            promote_to_champion=promote_to_champion,
+        )
 
-    print("="*80)
-    print("MODEL TRAINING & EVALUATION RESULTS")
-    print("="*80)
-    print(f"Logistic Regression | Test ROC-AUC: {lr_auc:.4f} | Test PR-AUC: {lr_prauc:.4f}")
-    print(f"Random Forest       | Test ROC-AUC: {rf_auc:.4f} | Test PR-AUC: {rf_prauc:.4f}")
-    print("="*80)
+    return model, metrics, version
 
-    # Serialize Random Forest model
-    joblib.dump(rf_model, MODEL_PATH)
-    print(f"Serialized model artifact saved to: '{MODEL_PATH}'")
 
-if __name__ == '__main__':
-    train_baseline_models()
+def train_random_forest(
+    train_df: pd.DataFrame,
+    test_df: pd.DataFrame,
+    register: bool = True,
+    promote_to_champion: bool = False,
+) -> tuple[RandomForestClassifier, dict[str, float], str]:
+    """
+    Fit Random Forest and optionally register in the model registry.
+
+    Parameters
+    ----------
+    train_df : pd.DataFrame
+        Processed training DataFrame.
+    test_df : pd.DataFrame
+        Processed test DataFrame.
+    register : bool
+        Whether to register this run in the versioning registry.
+    promote_to_champion : bool
+        Whether to promote this version as champion.
+
+    Returns
+    -------
+    tuple[RandomForestClassifier, dict, str]
+        ``(fitted_model, metrics_dict, version_tag)``
+    """
+    logger.info("Training Random Forest | params=%s", RF_PARAMS)
+    X_train, y_train = _split_xy(train_df)
+    X_test, y_test = _split_xy(test_df)
+
+    model = RandomForestClassifier(**RF_PARAMS)
+    model.fit(X_train, y_train)
+    logger.info("Random Forest training complete.")
+
+    metrics = _evaluate(model, X_test, y_test)
+    logger.info(
+        "RF Results → ROC-AUC: %.4f | PR-AUC: %.4f | "
+        "Accuracy: %.4f | F1: %.4f",
+        metrics["roc_auc"], metrics["pr_auc"],
+        metrics["accuracy"], metrics["f1_score"],
+    )
+
+    version = "not_registered"
+    if register:
+        version = register_model(
+            model=model,
+            model_name=MODEL_NAME_RF,
+            metrics=metrics,
+            params=RF_PARAMS,
+            n_train=len(train_df),
+            n_test=len(test_df),
+            promote_to_champion=promote_to_champion,
+        )
+
+    return model, metrics, version
+
+
+def train_xgboost(
+    train_df: pd.DataFrame,
+    test_df: pd.DataFrame,
+    register: bool = True,
+    promote_to_champion: bool = False,
+) -> tuple[XGBClassifier, dict[str, float], str]:
+    """
+    Fit XGBoost and optionally register in the model registry.
+
+    Parameters
+    ----------
+    train_df : pd.DataFrame
+        Processed training DataFrame.
+    test_df : pd.DataFrame
+        Processed test DataFrame.
+    register : bool
+        Whether to register this run in the versioning registry.
+    promote_to_champion : bool
+        Whether to promote this version as champion.
+
+    Returns
+    -------
+    tuple[XGBClassifier, dict, str]
+        ``(fitted_model, metrics_dict, version_tag)``
+    """
+    logger.info("Training XGBoost | params=%s", XGB_PARAMS)
+    X_train, y_train = _split_xy(train_df)
+    X_test, y_test = _split_xy(test_df)
+
+    # XGBoost handles missing values natively — no special treatment needed
+    xgb_params = {k: v for k, v in XGB_PARAMS.items()
+                  if k != "use_label_encoder"}
+    model = XGBClassifier(**xgb_params, verbosity=0)
+    model.fit(
+        X_train, y_train,
+        eval_set=[(X_test, y_test)],
+        verbose=False,
+    )
+    logger.info("XGBoost training complete.")
+
+    metrics = _evaluate(model, X_test, y_test)
+    logger.info(
+        "XGB Results → ROC-AUC: %.4f | PR-AUC: %.4f | "
+        "Accuracy: %.4f | F1: %.4f",
+        metrics["roc_auc"], metrics["pr_auc"],
+        metrics["accuracy"], metrics["f1_score"],
+    )
+
+    version = "not_registered"
+    if register:
+        version = register_model(
+            model=model,
+            model_name=MODEL_NAME_XGB,
+            metrics=metrics,
+            params=XGB_PARAMS,
+            n_train=len(train_df),
+            n_test=len(test_df),
+            promote_to_champion=promote_to_champion,
+        )
+
+    return model, metrics, version
+
+
+def serialize_model(model: object, path=None) -> None:
+    """
+    Persist a fitted model to disk via joblib (legacy compatibility).
+
+    For new workflows, prefer ``register_model()`` via ``src.versioning``.
+
+    Parameters
+    ----------
+    model : object
+        Any scikit-learn / XGBoost compatible fitted estimator.
+    path : Path | None
+        Destination path. Defaults to ``MODEL_PATH`` from config.
+    """
+    import joblib
+    from src.config import MODEL_PATH
+    target = path or MODEL_PATH
+    joblib.dump(model, target, compress=3)
+    logger.info("Serialized model artifact → '%s'", target)

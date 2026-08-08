@@ -1,50 +1,74 @@
-.PHONY: venv data features train predict reports api test lint format clean all
+# ─────────────────────────────────────────────────────────────────────────────
+# ML_EDA_full_fledge | Makefile
+# ─────────────────────────────────────────────────────────────────────────────
 
-python := python -u
-venv_python := .venv/bin/python
+PYTHON   := python
+VENV_DIR := .venv
+PIP      := $(VENV_DIR)/Scripts/pip   # Windows; Linux: $(VENV_DIR)/bin/pip
 
-## Set up virtual environment and install dependencies
+.PHONY: venv data features train predict reports api flask test lint clean all
+
+# ── Environment ───────────────────────────────────────────────────────────────
 venv:
-	python -m venv .venv
-	.venv/bin/pip install --upgrade pip
-	.venv/bin/pip install -r requirements.txt pytest ruff
+	$(PYTHON) -m venv $(VENV_DIR)
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
+	@echo "Virtual environment ready."
 
-## Verify dataset availability and raw data status
+# ── Pipeline Stages ───────────────────────────────────────────────────────────
 data:
-	$(python) -m src.dataset
+	$(PYTHON) -u -m src.dataset
 
-## Execute feature engineering, preprocessing pipeline, and save train/test artifacts
 features:
-	$(python) -m src.features
+	$(PYTHON) -u -m src.features
 
-## Train benchmark machine learning models and save model artifact
 train:
-	$(python) -m src.train
+	$(PYTHON) -u -m src.train
 
-## Run batch prediction on test dataset artifact
 predict:
-	$(python) -m src.predict
+	$(PYTHON) -u -m src.predict
 
-## Generate evaluation metrics (reports/metrics.json) and publication figures (reports/figures/)
 reports:
-	$(python) -m src.reports
+	$(PYTHON) -u -m src.reports
 
-## Run API inference demonstration
 api:
-	$(python) -m src.api
+	$(PYTHON) -u -m src.api
 
-## Run automated pytest unit & integration test suite
+# ── Flask API (NEW) ───────────────────────────────────────────────────────────
+flask:
+	$(PYTHON) -u -m src.flask_app
+
+# Production Flask via gunicorn (Linux/macOS only)
+flask-prod:
+	gunicorn "src.flask_app:create_app()" \
+		--bind 0.0.0.0:5000 \
+		--workers 4 \
+		--timeout 120 \
+		--access-logfile logs/gunicorn_access.log \
+		--error-logfile  logs/gunicorn_error.log
+
+# ── Quality Assurance ─────────────────────────────────────────────────────────
 test:
-	python -m pytest tests/ -v
+	$(PYTHON) -m pytest tests/ -v --tb=short
 
-## Lint codebase using Ruff
+test-cov:
+	$(PYTHON) -m pytest tests/ -v --cov=src --cov-report=html --tb=short
+
 lint:
-	python -m ruff check src/ tests/
+	$(PYTHON) -m ruff check src/ tests/
 
-## Execute full end-to-end pipeline
+# ── Full Pipeline ─────────────────────────────────────────────────────────────
 all: data features train predict reports api
 
-## Clean temporary python build artifacts and bytecode
+# ── Cleanup ───────────────────────────────────────────────────────────────────
 clean:
 	find . -type f -name "*.pyc" -delete
-	find . -type d -name "__pycache__" -delete
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	rm -f data/processed/*.csv
+	rm -f models/*.joblib
+	rm -rf models/registry/
+	rm -f reports/metrics.json
+	rm -rf reports/models/
+	rm -f reports/figures/*.png
+	rm -f logs/*.log
+	@echo "Build artifacts removed."
