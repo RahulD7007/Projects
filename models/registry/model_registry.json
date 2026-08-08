@@ -1,7 +1,7 @@
 {
   "models": {
     "logistic_regression": {
-      "champion": "v6",
+      "champion": "v13",
       "versions": {
         "v1": {
           "version": "v1",
@@ -116,11 +116,144 @@
           "pr_auc": 0.7712,
           "accuracy": 0.8305,
           "f1_score": 0.6565
+        },
+        "v7": {
+          "version": "v7",
+          "model_name": "logistic_regression",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\logistic_regression\\logistic_regression_v7.joblib",
+          "trained_at": "2026-08-08T12:34:07",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "max_iter": 1000,
+            "class_weight": "balanced",
+            "random_state": 42,
+            "solver": "lbfgs",
+            "C": 0.1
+          },
+          "roc_auc": 0.8459,
+          "pr_auc": 0.7712,
+          "accuracy": 0.8305,
+          "f1_score": 0.6565
+        },
+        "v8": {
+          "version": "v8",
+          "model_name": "logistic_regression",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\logistic_regression\\logistic_regression_v8.joblib",
+          "trained_at": "2026-08-08T12:46:25",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "max_iter": 1000,
+            "class_weight": "balanced",
+            "random_state": 42,
+            "solver": "lbfgs",
+            "C": 0.1
+          },
+          "roc_auc": 0.8459,
+          "pr_auc": 0.7712,
+          "accuracy": 0.8305,
+          "f1_score": 0.6565
+        },
+        "v9": {
+          "version": "v9",
+          "model_name": "logistic_regression",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\logistic_regression\\logistic_regression_v9.joblib",
+          "trained_at": "2026-08-08T12:55:51",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "max_iter": 1000,
+            "class_weight": "balanced",
+            "random_state": 42,
+            "solver": "lbfgs",
+            "C": 0.1
+          },
+          "roc_auc": 0.8459,
+          "pr_auc": 0.7712,
+          "accuracy": 0.8305,
+          "f1_score": 0.6565
+        },
+        "v10": {
+          "version": "v10",
+          "model_name": "logistic_regression",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\logistic_regression\\logistic_regression_v10.joblib",
+          "trained_at": "2026-08-08T13:58:55",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "max_iter": 1000,
+            "class_weight": "balanced",
+            "random_state": 42,
+            "solver": "lbfgs",
+            "C": 0.1
+          },
+          "roc_auc": 0.8459,
+          "pr_auc": 0.7712,
+          "accuracy": 0.8305,
+          "f1_score": 0.6565
+        },
+        "v11": {
+          "version": "v11",
+          "model_name": "logistic_regression",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\logistic_regression\\logistic_regression_v11.joblib",
+          "trained_at": "2026-08-08T14:08:44",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "max_iter": 1000,
+            "class_weight": "balanced",
+            "random_state": 42,
+            "solver": "lbfgs",
+            "C": 0.1
+          },
+          "roc_auc": 0.8459,
+          "pr_auc": 0.7712,
+          "accuracy": 0.8305,
+          "f1_score": 0.6565
+        },
+        "v12": {
+          "version": "v12",
+          "model_name": "logistic_regression",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\logistic_regression\\logistic_regression_v12.joblib",
+          "trained_at": "2026-08-08T14:26:59",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "max_iter": 1000,
+            "class_weight": "balanced",
+            "random_state": 42,
+            "solver": "lbfgs",
+            "C": 0.1
+          },
+          "roc_auc": 0.8459,
+          "pr_auc": 0.7712,
+          "accuracy": 0.8305,
+          "f1_score": 0.6565
+        },
+        "v13": {
+          "version": "v13",
+          "model_name": "logistic_regression",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\logistic_regression\\logistic_regression_v13.joblib",
+          "trained_at": "2026-08-08T14:33:49",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "max_iter": 1000,
+            "class_weight": "balanced",
+            "random_state": 42,
+            "solver": "lbfgs",
+            "C": 0.1
+          },
+          "roc_auc": 0.8459,
+          "pr_auc": 0.7712,
+          "accuracy": 0.8305,
+          "f1_score": 0.6565
         }
       }
     },
     "random_forest": {
-      "champion": "v5",
+      "champion": "v13",
       "versions": {
         "v1": {
           "version": "v1",
@@ -226,11 +359,179 @@
           "pr_auc": 0.8284,
           "accuracy": 0.8727,
           "f1_score": 0.7291
+        },
+        "v6": {
+          "version": "v6",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v6.joblib",
+          "trained_at": "2026-08-08T12:20:31",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
+        },
+        "v7": {
+          "version": "v7",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v7.joblib",
+          "trained_at": "2026-08-08T12:34:20",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
+        },
+        "v8": {
+          "version": "v8",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v8.joblib",
+          "trained_at": "2026-08-08T12:46:41",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
+        },
+        "v9": {
+          "version": "v9",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v9.joblib",
+          "trained_at": "2026-08-08T12:56:07",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
+        },
+        "v10": {
+          "version": "v10",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v10.joblib",
+          "trained_at": "2026-08-08T13:59:17",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
+        },
+        "v11": {
+          "version": "v11",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v11.joblib",
+          "trained_at": "2026-08-08T14:09:03",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
+        },
+        "v12": {
+          "version": "v12",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v12.joblib",
+          "trained_at": "2026-08-08T14:27:19",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
+        },
+        "v13": {
+          "version": "v13",
+          "model_name": "random_forest",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\random_forest\\random_forest_v13.joblib",
+          "trained_at": "2026-08-08T14:34:13",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 300,
+            "max_depth": 12,
+            "min_samples_leaf": 20,
+            "max_features": "sqrt",
+            "class_weight": "balanced",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "roc_auc": 0.8863,
+          "pr_auc": 0.8284,
+          "accuracy": 0.8727,
+          "f1_score": 0.7291
         }
       }
     },
     "xgboost": {
-      "champion": "v5",
+      "champion": "v13",
       "versions": {
         "v1": {
           "version": "v1",
@@ -341,6 +642,206 @@
           "model_name": "xgboost",
           "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v5.joblib",
           "trained_at": "2026-08-08T12:09:37",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v6": {
+          "version": "v6",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v6.joblib",
+          "trained_at": "2026-08-08T12:20:41",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v7": {
+          "version": "v7",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v7.joblib",
+          "trained_at": "2026-08-08T12:34:32",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v8": {
+          "version": "v8",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v8.joblib",
+          "trained_at": "2026-08-08T12:46:53",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v9": {
+          "version": "v9",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v9.joblib",
+          "trained_at": "2026-08-08T12:56:19",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v10": {
+          "version": "v10",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v10.joblib",
+          "trained_at": "2026-08-08T13:59:31",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v11": {
+          "version": "v11",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v11.joblib",
+          "trained_at": "2026-08-08T14:09:16",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v12": {
+          "version": "v12",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v12.joblib",
+          "trained_at": "2026-08-08T14:27:34",
+          "n_train": 118936,
+          "n_test": 29734,
+          "params": {
+            "n_estimators": 400,
+            "max_depth": 6,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "min_child_weight": 10,
+            "scale_pos_weight": 3,
+            "eval_metric": "auc",
+            "random_state": 42,
+            "n_jobs": -1,
+            "tree_method": "hist"
+          },
+          "roc_auc": 0.8953,
+          "pr_auc": 0.8459,
+          "accuracy": 0.8803,
+          "f1_score": 0.7492
+        },
+        "v13": {
+          "version": "v13",
+          "model_name": "xgboost",
+          "artifact": "D:\\VSCode_Projects\\Projects\\models\\registry\\xgboost\\xgboost_v13.joblib",
+          "trained_at": "2026-08-08T14:34:33",
           "n_train": 118936,
           "n_test": 29734,
           "params": {

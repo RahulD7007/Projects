@@ -1,18 +1,3 @@
-"""
-predict.py
-──────────
-Entry-point for batch prediction inference.
-
-Loads the champion Random Forest model from the versioning registry,
-scores all rows in the processed test set, and prints a sample of
-the output to stdout.
-
-Usage
-─────
-    python -m src.predict
-    make predict
-"""
-
 from __future__ import annotations
 
 import sys
@@ -21,7 +6,7 @@ import pandas as pd
 
 from src.config import TARGET_COL, TEST_PROCESSED_PATH
 from src.logger import get_logger
-from src.modeling.predict import load_champion, predict_proba   # ← correct imports
+from src.modeling.predict import load_champion, predict_proba  # ← correct imports
 
 logger = get_logger(__name__)
 

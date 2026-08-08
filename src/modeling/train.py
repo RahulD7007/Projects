@@ -282,7 +282,9 @@ def serialize_model(model: object, path=None) -> None:
         Destination path. Defaults to ``MODEL_PATH`` from config.
     """
     import joblib
+
     from src.config import MODEL_PATH
+
     target = path or MODEL_PATH
     joblib.dump(model, target, compress=3)
     logger.info("Serialized model artifact → '%s'", target)
