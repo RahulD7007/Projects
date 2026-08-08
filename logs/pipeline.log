@@ -1,0 +1,259 @@
+2026-08-08 11:09:46 | INFO     | __main__:175 | Feature engineering pipeline started.
+2026-08-08 11:09:47 | DEBUG    | __main__:51 | Starting feature engineering | shape=(148670, 34)
+2026-08-08 11:09:47 | DEBUG    | __main__:58 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-08 11:09:47 | DEBUG    | __main__:66 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-08 11:09:47 | DEBUG    | __main__:66 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-08 11:09:47 | DEBUG    | __main__:75 | Feature 'DTI_x_LTV' created.
+2026-08-08 11:09:47 | DEBUG    | __main__:81 | Feature 'loan_to_income' created.
+2026-08-08 11:09:47 | INFO     | __main__:83 | Feature engineering complete | output shape=(148670, 34)
+2026-08-08 11:09:47 | DEBUG    | __main__:138 | Splitting data | test_size=0.20 | random_state=42
+2026-08-08 11:09:47 | INFO     | __main__:148 | Train=118936 samples | Test=29734 samples
+2026-08-08 11:09:47 | DEBUG    | __main__:124 | Preprocessing pipeline constructed.
+2026-08-08 11:09:47 | DEBUG    | __main__:153 | Fitting ColumnTransformer on training data only...
+2026-08-08 11:09:47 | CRITICAL | __main__:208 | Feature pipeline failed: Cannot use median strategy with non-numeric data:
+could not convert string to float: '65-74'
+Traceback (most recent call last):
+  File "D:\VSCode_Projects\Projects\src\features.py", line 206, in <module>
+    main()
+  File "D:\VSCode_Projects\Projects\src\features.py", line 183, in main
+    train_df, test_df = run_preprocessing_pipeline(df_engineered)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\src\features.py", line 154, in run_preprocessing_pipeline
+    X_train_arr = preprocessor.fit_transform(X_train)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 979, in fit_transform
+    result = self._call_func_on_transformers(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    return Parallel(n_jobs=self.n_jobs)(jobs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\utils\parallel.py", line 91, in __call__
+    return super().__call__(iterable_with_config_and_warning_filters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\joblib\parallel.py", line 1986, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\joblib\parallel.py", line 1914, in _get_sequential_output
+    res = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\utils\parallel.py", line 184, in __call__
+    return self.function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\pipeline.py", line 1566, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **params.get("fit_transform", {}))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\pipeline.py", line 716, in fit_transform
+    Xt = self._fit(X, y, routed_params, callback_ctx=callback_ctx)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\pipeline.py", line 565, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\joblib\memory.py", line 326, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\pipeline.py", line 1593, in _fit_transform_one_with_callbacks
+    Xt, transformer = _fit_transform_one(
+                      ^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\pipeline.py", line 1566, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **params.get("fit_transform", {}))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\base.py", line 969, in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\impute\_base.py", line 448, in fit
+    X = self._validate_input(X, in_fit=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\VSCode_Projects\Projects\.venv\Lib\site-packages\sklearn\impute\_base.py", line 373, in _validate_input
+    raise new_ve from None
+ValueError: Cannot use median strategy with non-numeric data:
+could not convert string to float: '65-74'
+2026-08-08 11:14:57 | INFO     | __main__:175 | Feature engineering pipeline started.
+2026-08-08 11:14:58 | DEBUG    | __main__:51 | Starting feature engineering | shape=(148670, 34)
+2026-08-08 11:14:58 | DEBUG    | __main__:58 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-08 11:14:58 | DEBUG    | __main__:66 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-08 11:14:58 | DEBUG    | __main__:66 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-08 11:14:58 | DEBUG    | __main__:75 | Feature 'DTI_x_LTV' created.
+2026-08-08 11:14:58 | DEBUG    | __main__:81 | Feature 'loan_to_income' created.
+2026-08-08 11:14:58 | INFO     | __main__:83 | Feature engineering complete | output shape=(148670, 34)
+2026-08-08 11:14:58 | DEBUG    | __main__:138 | Splitting data | test_size=0.20 | random_state=42
+2026-08-08 11:14:58 | INFO     | __main__:148 | Train=118936 samples | Test=29734 samples
+2026-08-08 11:14:58 | DEBUG    | __main__:124 | Preprocessing pipeline constructed.
+2026-08-08 11:14:58 | DEBUG    | __main__:153 | Fitting ColumnTransformer on training data only...
+2026-08-08 11:14:59 | INFO     | __main__:158 | Preprocessing complete | 52 features generated.
+2026-08-08 11:15:04 | INFO     | __main__:201 | Feature engineering pipeline complete.
+2026-08-08 11:15:22 | INFO     | __main__:62 | ======================================================================
+2026-08-08 11:15:22 | INFO     | __main__:63 | MODEL TRAINING PIPELINE STARTED
+2026-08-08 11:15:22 | INFO     | __main__:64 | ======================================================================
+2026-08-08 11:15:22 | INFO     | __main__:67 | Loading processed dataset artifacts...
+2026-08-08 11:15:23 | INFO     | __main__:71 | Loaded train=118936 rows | test=29734 rows
+2026-08-08 11:15:23 | INFO     | __main__:87 | ──────────────────────────────────────────────────
+2026-08-08 11:15:23 | INFO     | src.modeling.train:121 | Training Logistic Regression | params={'max_iter': 1000, 'class_weight': 'balanced', 'random_state': 42, 'solver': 'lbfgs', 'C': 0.1}
+2026-08-08 11:15:24 | INFO     | src.modeling.train:127 | Logistic Regression training complete.
+2026-08-08 11:15:24 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8459, 'pr_auc': 0.7712, 'accuracy': 0.8305, 'f1_score': 0.6565}
+2026-08-08 11:15:24 | INFO     | src.modeling.train:130 | LR Results → ROC-AUC: 0.8459 | PR-AUC: 0.7712 | Accuracy: 0.8305 | F1: 0.6565
+2026-08-08 11:15:24 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v1.joblib (version=v1)
+2026-08-08 11:15:24 | INFO     | src.versioning:187 | Model 'logistic_regression' champion promoted → v1 (ROC-AUC: 0.8459)
+2026-08-08 11:15:24 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:15:24 | INFO     | src.versioning:195 | Registered 'logistic_regression' v1 | ROC-AUC=0.8459 | PR-AUC=0.7712
+2026-08-08 11:15:24 | INFO     | __main__:95 | ──────────────────────────────────────────────────
+2026-08-08 11:15:24 | INFO     | src.modeling.train:177 | Training Random Forest | params={'n_estimators': 300, 'max_depth': 12, 'min_samples_leaf': 20, 'max_features': 'sqrt', 'class_weight': 'balanced', 'random_state': 42, 'n_jobs': -1}
+2026-08-08 11:15:36 | INFO     | src.modeling.train:183 | Random Forest training complete.
+2026-08-08 11:15:36 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8863, 'pr_auc': 0.8284, 'accuracy': 0.8727, 'f1_score': 0.7291}
+2026-08-08 11:15:36 | INFO     | src.modeling.train:186 | RF Results → ROC-AUC: 0.8863 | PR-AUC: 0.8284 | Accuracy: 0.8727 | F1: 0.7291
+2026-08-08 11:15:37 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v1.joblib (version=v1)
+2026-08-08 11:15:37 | INFO     | src.versioning:187 | Model 'random_forest' champion promoted → v1 (ROC-AUC: 0.8863)
+2026-08-08 11:15:37 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:15:37 | INFO     | src.versioning:195 | Registered 'random_forest' v1 | ROC-AUC=0.8863 | PR-AUC=0.8284
+2026-08-08 11:15:37 | INFO     | __main__:103 | ──────────────────────────────────────────────────
+2026-08-08 11:15:37 | INFO     | src.modeling.train:233 | Training XGBoost | params={'n_estimators': 400, 'max_depth': 6, 'learning_rate': 0.05, 'subsample': 0.8, 'colsample_bytree': 0.8, 'min_child_weight': 10, 'scale_pos_weight': 3, 'eval_metric': 'auc', 'use_label_encoder': False, 'random_state': 42, 'n_jobs': -1, 'tree_method': 'hist'}
+2026-08-08 11:15:43 | INFO     | src.modeling.train:246 | XGBoost training complete.
+2026-08-08 11:15:43 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8952, 'pr_auc': 0.846, 'accuracy': 0.8809, 'f1_score': 0.7502}
+2026-08-08 11:15:43 | INFO     | src.modeling.train:249 | XGB Results → ROC-AUC: 0.8952 | PR-AUC: 0.8460 | Accuracy: 0.8809 | F1: 0.7502
+2026-08-08 11:15:43 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v1.joblib (version=v1)
+2026-08-08 11:15:43 | INFO     | src.versioning:187 | Model 'xgboost' champion promoted → v1 (ROC-AUC: 0.8952)
+2026-08-08 11:15:43 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:15:43 | INFO     | src.versioning:195 | Registered 'xgboost' v1 | ROC-AUC=0.8952 | PR-AUC=0.8460
+2026-08-08 11:15:43 | INFO     | src.modeling.train:288 | Serialized model artifact → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-08 11:15:43 | INFO     | __main__:138 | Best model: 'xgboost' serialized → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-08 11:15:43 | INFO     | __main__:143 | Training pipeline complete.
+2026-08-08 11:18:26 | INFO     | __main__:175 | Feature engineering pipeline started.
+2026-08-08 11:18:27 | DEBUG    | __main__:51 | Starting feature engineering | shape=(148670, 34)
+2026-08-08 11:18:27 | DEBUG    | __main__:58 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-08 11:18:27 | DEBUG    | __main__:66 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-08 11:18:27 | DEBUG    | __main__:66 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-08 11:18:27 | DEBUG    | __main__:75 | Feature 'DTI_x_LTV' created.
+2026-08-08 11:18:27 | DEBUG    | __main__:81 | Feature 'loan_to_income' created.
+2026-08-08 11:18:27 | INFO     | __main__:83 | Feature engineering complete | output shape=(148670, 34)
+2026-08-08 11:18:27 | DEBUG    | __main__:138 | Splitting data | test_size=0.20 | random_state=42
+2026-08-08 11:18:27 | INFO     | __main__:148 | Train=118936 samples | Test=29734 samples
+2026-08-08 11:18:27 | DEBUG    | __main__:124 | Preprocessing pipeline constructed.
+2026-08-08 11:18:27 | DEBUG    | __main__:153 | Fitting ColumnTransformer on training data only...
+2026-08-08 11:18:28 | INFO     | __main__:158 | Preprocessing complete | 52 features generated.
+2026-08-08 11:18:33 | INFO     | __main__:201 | Feature engineering pipeline complete.
+2026-08-08 11:18:42 | INFO     | __main__:62 | ======================================================================
+2026-08-08 11:18:42 | INFO     | __main__:63 | MODEL TRAINING PIPELINE STARTED
+2026-08-08 11:18:42 | INFO     | __main__:64 | ======================================================================
+2026-08-08 11:18:42 | INFO     | __main__:67 | Loading processed dataset artifacts...
+2026-08-08 11:18:43 | INFO     | __main__:71 | Loaded train=118936 rows | test=29734 rows
+2026-08-08 11:18:43 | INFO     | __main__:87 | ──────────────────────────────────────────────────
+2026-08-08 11:18:43 | INFO     | src.modeling.train:121 | Training Logistic Regression | params={'max_iter': 1000, 'class_weight': 'balanced', 'random_state': 42, 'solver': 'lbfgs', 'C': 0.1}
+2026-08-08 11:18:45 | INFO     | src.modeling.train:127 | Logistic Regression training complete.
+2026-08-08 11:18:45 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8459, 'pr_auc': 0.7712, 'accuracy': 0.8305, 'f1_score': 0.6565}
+2026-08-08 11:18:45 | INFO     | src.modeling.train:130 | LR Results → ROC-AUC: 0.8459 | PR-AUC: 0.7712 | Accuracy: 0.8305 | F1: 0.6565
+2026-08-08 11:18:45 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v2.joblib (version=v2)
+2026-08-08 11:18:45 | INFO     | src.versioning:187 | Model 'logistic_regression' champion promoted → v2 (ROC-AUC: 0.8459)
+2026-08-08 11:18:45 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:18:45 | INFO     | src.versioning:195 | Registered 'logistic_regression' v2 | ROC-AUC=0.8459 | PR-AUC=0.7712
+2026-08-08 11:18:45 | INFO     | __main__:95 | ──────────────────────────────────────────────────
+2026-08-08 11:18:45 | INFO     | src.modeling.train:177 | Training Random Forest | params={'n_estimators': 300, 'max_depth': 12, 'min_samples_leaf': 20, 'max_features': 'sqrt', 'class_weight': 'balanced', 'random_state': 42, 'n_jobs': -1}
+2026-08-08 11:18:56 | INFO     | src.modeling.train:183 | Random Forest training complete.
+2026-08-08 11:18:56 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8863, 'pr_auc': 0.8284, 'accuracy': 0.8727, 'f1_score': 0.7291}
+2026-08-08 11:18:56 | INFO     | src.modeling.train:186 | RF Results → ROC-AUC: 0.8863 | PR-AUC: 0.8284 | Accuracy: 0.8727 | F1: 0.7291
+2026-08-08 11:18:57 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v2.joblib (version=v2)
+2026-08-08 11:18:57 | INFO     | src.versioning:187 | Model 'random_forest' champion promoted → v2 (ROC-AUC: 0.8863)
+2026-08-08 11:18:57 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:18:57 | INFO     | src.versioning:195 | Registered 'random_forest' v2 | ROC-AUC=0.8863 | PR-AUC=0.8284
+2026-08-08 11:18:57 | INFO     | __main__:103 | ──────────────────────────────────────────────────
+2026-08-08 11:18:57 | INFO     | src.modeling.train:233 | Training XGBoost | params={'n_estimators': 400, 'max_depth': 6, 'learning_rate': 0.05, 'subsample': 0.8, 'colsample_bytree': 0.8, 'min_child_weight': 10, 'scale_pos_weight': 3, 'eval_metric': 'auc', 'use_label_encoder': False, 'random_state': 42, 'n_jobs': -1, 'tree_method': 'hist'}
+2026-08-08 11:19:05 | INFO     | src.modeling.train:246 | XGBoost training complete.
+2026-08-08 11:19:06 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8953, 'pr_auc': 0.8459, 'accuracy': 0.8803, 'f1_score': 0.7492}
+2026-08-08 11:19:06 | INFO     | src.modeling.train:249 | XGB Results → ROC-AUC: 0.8953 | PR-AUC: 0.8459 | Accuracy: 0.8803 | F1: 0.7492
+2026-08-08 11:19:06 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v2.joblib (version=v2)
+2026-08-08 11:19:06 | INFO     | src.versioning:187 | Model 'xgboost' champion promoted → v2 (ROC-AUC: 0.8953)
+2026-08-08 11:19:06 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:19:06 | INFO     | src.versioning:195 | Registered 'xgboost' v2 | ROC-AUC=0.8953 | PR-AUC=0.8459
+2026-08-08 11:19:06 | INFO     | src.modeling.train:288 | Serialized model artifact → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-08 11:19:06 | INFO     | __main__:138 | Best model: 'xgboost' serialized → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-08 11:19:06 | INFO     | __main__:143 | Training pipeline complete.
+2026-08-08 11:19:11 | INFO     | __main__:30 | Batch prediction inference started.
+2026-08-08 11:19:11 | INFO     | __main__:33 | Loading test dataset from 'D:\VSCode_Projects\Projects\data\processed\test_processed.csv'
+2026-08-08 11:19:11 | INFO     | __main__:45 | Test dataset loaded | 29734 rows
+2026-08-08 11:19:11 | INFO     | __main__:48 | Loading champion model from versioning registry...
+2026-08-08 11:19:11 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-08 11:19:11 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v2 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v2.joblib'
+2026-08-08 11:19:13 | INFO     | __main__:58 | Running batch inference on 29734 samples...
+2026-08-08 11:19:13 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-08 11:19:13 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-08 11:19:13 | INFO     | __main__:60 | Inference complete | predicted_defaults=6645 / 29734 (22.35%)
+2026-08-08 11:19:13 | INFO     | __main__:76 | Batch prediction inference complete.
+2026-08-08 11:19:30 | INFO     | __main__:191 | Report generation pipeline started.
+2026-08-08 11:19:31 | INFO     | __main__:216 | Generating report for: Logistic Regression
+2026-08-08 11:19:31 | INFO     | src.versioning:247 | Loaded champion 'logistic_regression' v2 from 'D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v2.joblib'
+2026-08-08 11:19:31 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-08 11:19:31 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.4062 | predicted_defaults=7349
+2026-08-08 11:19:31 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\logistic_regression\metrics.json'
+2026-08-08 11:22:12 | INFO     | __main__:175 | Feature engineering pipeline started.
+2026-08-08 11:22:13 | DEBUG    | __main__:51 | Starting feature engineering | shape=(148670, 34)
+2026-08-08 11:22:13 | DEBUG    | __main__:58 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-08 11:22:13 | DEBUG    | __main__:66 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-08 11:22:13 | DEBUG    | __main__:66 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-08 11:22:13 | DEBUG    | __main__:75 | Feature 'DTI_x_LTV' created.
+2026-08-08 11:22:13 | DEBUG    | __main__:81 | Feature 'loan_to_income' created.
+2026-08-08 11:22:13 | INFO     | __main__:83 | Feature engineering complete | output shape=(148670, 34)
+2026-08-08 11:22:13 | DEBUG    | __main__:138 | Splitting data | test_size=0.20 | random_state=42
+2026-08-08 11:22:13 | INFO     | __main__:148 | Train=118936 samples | Test=29734 samples
+2026-08-08 11:22:13 | DEBUG    | __main__:124 | Preprocessing pipeline constructed.
+2026-08-08 11:22:13 | DEBUG    | __main__:153 | Fitting ColumnTransformer on training data only...
+2026-08-08 11:22:14 | INFO     | __main__:158 | Preprocessing complete | 52 features generated.
+2026-08-08 11:22:18 | INFO     | __main__:201 | Feature engineering pipeline complete.
+2026-08-08 11:22:25 | INFO     | __main__:62 | ======================================================================
+2026-08-08 11:22:25 | INFO     | __main__:63 | MODEL TRAINING PIPELINE STARTED
+2026-08-08 11:22:25 | INFO     | __main__:64 | ======================================================================
+2026-08-08 11:22:25 | INFO     | __main__:67 | Loading processed dataset artifacts...
+2026-08-08 11:22:26 | INFO     | __main__:71 | Loaded train=118936 rows | test=29734 rows
+2026-08-08 11:22:26 | INFO     | __main__:87 | ──────────────────────────────────────────────────
+2026-08-08 11:22:26 | INFO     | src.modeling.train:121 | Training Logistic Regression | params={'max_iter': 1000, 'class_weight': 'balanced', 'random_state': 42, 'solver': 'lbfgs', 'C': 0.1}
+2026-08-08 11:22:27 | INFO     | src.modeling.train:127 | Logistic Regression training complete.
+2026-08-08 11:22:27 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8459, 'pr_auc': 0.7712, 'accuracy': 0.8305, 'f1_score': 0.6565}
+2026-08-08 11:22:27 | INFO     | src.modeling.train:130 | LR Results → ROC-AUC: 0.8459 | PR-AUC: 0.7712 | Accuracy: 0.8305 | F1: 0.6565
+2026-08-08 11:22:27 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v3.joblib (version=v3)
+2026-08-08 11:22:27 | INFO     | src.versioning:187 | Model 'logistic_regression' champion promoted → v3 (ROC-AUC: 0.8459)
+2026-08-08 11:22:27 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:22:27 | INFO     | src.versioning:195 | Registered 'logistic_regression' v3 | ROC-AUC=0.8459 | PR-AUC=0.7712
+2026-08-08 11:22:27 | INFO     | __main__:95 | ──────────────────────────────────────────────────
+2026-08-08 11:22:27 | INFO     | src.modeling.train:177 | Training Random Forest | params={'n_estimators': 300, 'max_depth': 12, 'min_samples_leaf': 20, 'max_features': 'sqrt', 'class_weight': 'balanced', 'random_state': 42, 'n_jobs': -1}
+2026-08-08 11:22:40 | INFO     | src.modeling.train:183 | Random Forest training complete.
+2026-08-08 11:22:40 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8863, 'pr_auc': 0.8284, 'accuracy': 0.8727, 'f1_score': 0.7291}
+2026-08-08 11:22:40 | INFO     | src.modeling.train:186 | RF Results → ROC-AUC: 0.8863 | PR-AUC: 0.8284 | Accuracy: 0.8727 | F1: 0.7291
+2026-08-08 11:22:40 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib (version=v3)
+2026-08-08 11:22:40 | INFO     | src.versioning:187 | Model 'random_forest' champion promoted → v3 (ROC-AUC: 0.8863)
+2026-08-08 11:22:40 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:22:40 | INFO     | src.versioning:195 | Registered 'random_forest' v3 | ROC-AUC=0.8863 | PR-AUC=0.8284
+2026-08-08 11:22:40 | INFO     | __main__:103 | ──────────────────────────────────────────────────
+2026-08-08 11:22:40 | INFO     | src.modeling.train:233 | Training XGBoost | params={'n_estimators': 400, 'max_depth': 6, 'learning_rate': 0.05, 'subsample': 0.8, 'colsample_bytree': 0.8, 'min_child_weight': 10, 'scale_pos_weight': 3, 'eval_metric': 'auc', 'use_label_encoder': False, 'random_state': 42, 'n_jobs': -1, 'tree_method': 'hist'}
+2026-08-08 11:22:49 | INFO     | src.modeling.train:246 | XGBoost training complete.
+2026-08-08 11:22:49 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8953, 'pr_auc': 0.8459, 'accuracy': 0.8803, 'f1_score': 0.7492}
+2026-08-08 11:22:49 | INFO     | src.modeling.train:249 | XGB Results → ROC-AUC: 0.8953 | PR-AUC: 0.8459 | Accuracy: 0.8803 | F1: 0.7492
+2026-08-08 11:22:49 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v3.joblib (version=v3)
+2026-08-08 11:22:49 | INFO     | src.versioning:187 | Model 'xgboost' champion promoted → v3 (ROC-AUC: 0.8953)
+2026-08-08 11:22:49 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-08 11:22:49 | INFO     | src.versioning:195 | Registered 'xgboost' v3 | ROC-AUC=0.8953 | PR-AUC=0.8459
+2026-08-08 11:22:49 | INFO     | src.modeling.train:288 | Serialized model artifact → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-08 11:22:49 | INFO     | __main__:138 | Best model: 'xgboost' serialized → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-08 11:22:49 | INFO     | __main__:143 | Training pipeline complete.
+2026-08-08 11:22:54 | INFO     | __main__:30 | Batch prediction inference started.
+2026-08-08 11:22:54 | INFO     | __main__:33 | Loading test dataset from 'D:\VSCode_Projects\Projects\data\processed\test_processed.csv'
+2026-08-08 11:22:54 | INFO     | __main__:45 | Test dataset loaded | 29734 rows
+2026-08-08 11:22:54 | INFO     | __main__:48 | Loading champion model from versioning registry...
+2026-08-08 11:22:54 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-08 11:22:54 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-08 11:22:56 | INFO     | __main__:58 | Running batch inference on 29734 samples...
+2026-08-08 11:22:56 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-08 11:22:56 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-08 11:22:56 | INFO     | __main__:60 | Inference complete | predicted_defaults=6645 / 29734 (22.35%)
+2026-08-08 11:22:56 | INFO     | __main__:76 | Batch prediction inference complete.
