@@ -1,0 +1,12 @@
+{
+  "roc_auc": 0.8953,
+  "pr_auc": 0.8459,
+  "accuracy": 0.8803,
+  "f1_score": 0.7492,
+  "confusion_matrix": {
+    "true_negative": 20856,
+    "false_positive": 1550,
+    "false_negative": 2010,
+    "true_positive": 5318
+  }
+}

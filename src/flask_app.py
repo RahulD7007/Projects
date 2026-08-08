@@ -3,32 +3,19 @@ flask_app.py
 ────────────
 Flask REST API for single-application loan default scoring.
 
+Key change
+──────────
+Replaced run_preprocessing_pipeline() with load_preprocessor() so that
+the ColumnTransformer fitted on the full 118,936-row training split is
+reused for every inference call. This eliminates the XGBoost object-dtype
+ValueError caused by re-fitting the OHE on a single row.
+
 Endpoints
 ─────────
 GET  /health
-    Liveness check — returns service status and loaded model info.
-
 POST /predict
-    Score a single loan application.
-    Accepts JSON body, returns default probability + recommendation.
-
 POST /predict/batch
-    Score multiple applications in one request.
-    Accepts JSON array, returns array of scoring responses.
-
 GET  /model/info
-    Returns champion model metadata from the versioning registry.
-
-Usage
-─────
-    # Development server
-    python -m src.flask_app
-
-    # Production (via gunicorn)
-    gunicorn "src.flask_app:create_app()" --bind 0.0.0.0:5000 --workers 4
-
-    # Make target
-    make flask
 """
 
 from __future__ import annotations
@@ -52,36 +39,48 @@ from src.config import (
     RISK_SCORE_FLOOR,
     TARGET_COL,
 )
-from src.features import execute_feature_engineering, run_preprocessing_pipeline
+from src.features import execute_feature_engineering, load_preprocessor
 from src.logger import get_flask_logger
-from src.modeling.predict import predict_proba
+from src.modeling.predict import load_champion, predict_proba
 from src.versioning import get_registry_summary, load_champion_model
 
 logger = get_flask_logger(__name__)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# MODEL CACHE  (loaded once at startup; avoids per-request disk I/O)
+# CACHED LOADERS  (loaded once at startup; zero per-request disk I/O)
 # ─────────────────────────────────────────────────────────────────────────────
 
 @lru_cache(maxsize=1)
 def _get_model() -> object:
     """
-    Load the Random Forest champion model exactly once and cache it.
+    Load and cache the champion Random Forest model.
 
-    The ``@lru_cache`` decorator ensures the model is loaded from disk
-    only on the first call; subsequent requests reuse the in-memory object.
-
-    Returns
-    -------
-    object
-        Fitted champion Random Forest estimator.
+    The @lru_cache decorator ensures the model is loaded from disk only
+    on the first call; all subsequent requests reuse the in-memory object.
     """
-    logger.info("Loading champion model '%s' into memory cache...",
-                MODEL_NAME_RF)
+    logger.info(
+        "Loading champion model '%s' into memory cache...", MODEL_NAME_RF
+    )
     model = load_champion_model(MODEL_NAME_RF)
     logger.info("Model loaded and cached successfully.")
     return model
+
+
+@lru_cache(maxsize=1)
+def _get_preprocessor() -> object:
+    """
+    Load and cache the fitted ColumnTransformer.
+
+    The preprocessor is fitted once during ``make features`` on the full
+    118,936-row training split and saved to models/preprocessor.joblib.
+    Caching it here means every Flask request reuses the same in-memory
+    transformer — no re-fitting, no object-dtype errors.
+    """
+    logger.info("Loading fitted preprocessor into memory cache...")
+    preprocessor = load_preprocessor()
+    logger.info("Preprocessor loaded and cached successfully.")
+    return preprocessor
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -90,8 +89,9 @@ def _get_model() -> object:
 
 def _prob_to_risk_score(prob: float) -> int:
     """Map [0, 1] default probability → [100, 200] internal risk score."""
-    score = RISK_SCORE_FLOOR + \
-        int(prob * (RISK_SCORE_CEILING - RISK_SCORE_FLOOR))
+    score = RISK_SCORE_FLOOR + int(
+        prob * (RISK_SCORE_CEILING - RISK_SCORE_FLOOR)
+    )
     return int(np.clip(score, RISK_SCORE_FLOOR, RISK_SCORE_CEILING))
 
 
@@ -106,10 +106,14 @@ def _recommendation(prob: float) -> str:
 
 def _score_single(application: dict[str, Any]) -> dict[str, Any]:
     """
-    Core scoring logic for a single application dictionary.
+    Core scoring logic for a single application.
 
-    Applies the same feature engineering and preprocessing pipeline
-    used during model training.
+    Processing steps
+    ────────────────
+    1. Build single-row DataFrame.
+    2. Apply feature engineering (flags, ratios).
+    3. Transform with the cached fitted preprocessor (transform-only).
+    4. Score with the cached champion model.
 
     Parameters
     ----------
@@ -119,32 +123,33 @@ def _score_single(application: dict[str, Any]) -> dict[str, Any]:
     Returns
     -------
     dict
-        Scoring response:
-        ``default_probability``, ``underwriting_recommendation``,
-        ``risk_score``.
+        default_probability, underwriting_recommendation, risk_score.
     """
-    # Build single-row DataFrame with dummy target
+    # ── 1. Build single-row DataFrame ────────────────────────────────────────
     df_raw = pd.DataFrame([application])
-    df_raw[TARGET_COL] = 0
+    df_raw[TARGET_COL] = 0   # dummy target for feature engineering step
 
-    # Feature engineering
+    # ── 2. Feature engineering ────────────────────────────────────────────────
     df_engineered = execute_feature_engineering(df_raw)
+    X_raw = df_engineered.drop(columns=[TARGET_COL])
 
-    # Duplicate row so train/test split doesn't fail on a single sample
-    df_doubled = pd.concat(
-        [df_engineered, df_engineered], ignore_index=True
-    )
-    _, test_processed = run_preprocessing_pipeline(df_doubled)
+    # ── 3. Transform with cached fitted preprocessor ──────────────────────────
+    # transform() only — never fit() on a single row.
+    # All OHE categories / scaler stats come from the 118,936-row training fit.
+    preprocessor = _get_preprocessor()
+    X_arr = preprocessor.transform(X_raw)
+    feature_names = preprocessor.get_feature_names_out().tolist()
+    X_df = pd.DataFrame(X_arr, columns=feature_names)
 
-    # Score with cached model
+    # ── 4. Score with cached champion model ───────────────────────────────────
     model = _get_model()
-    result = predict_proba(model, test_processed.iloc[[0]])
+    result = predict_proba(model, X_df)
     prob = float(result["Predicted_Default_Prob"].iloc[0])
 
     return {
-        "default_probability":       round(prob, 4),
+        "default_probability":         round(prob, 4),
         "underwriting_recommendation": _recommendation(prob),
-        "risk_score":                _prob_to_risk_score(prob),
+        "risk_score":                  _prob_to_risk_score(prob),
     }
 
 
@@ -152,26 +157,20 @@ def _validate_application(data: dict) -> list[str]:
     """
     Validate required fields in a loan application payload.
 
-    Parameters
-    ----------
-    data : dict
-        Raw JSON payload.
-
     Returns
     -------
     list[str]
-        List of validation error messages (empty if valid).
+        Validation error messages (empty list if valid).
     """
     required_fields = [
         "loan_amount", "income", "Credit_Score",
         "LTV", "term", "loan_type", "Region",
     ]
     errors = [
-        f"Missing required field: '{field}'"
-        for field in required_fields
-        if field not in data
+        f"Missing required field: '{f}'"
+        for f in required_fields
+        if f not in data
     ]
-    # Type validation for numeric fields
     numeric_fields = ["loan_amount", "income", "Credit_Score", "LTV", "term"]
     for field in numeric_fields:
         if field in data and not isinstance(data[field], (int, float)):
@@ -182,10 +181,6 @@ def _validate_application(data: dict) -> list[str]:
     return errors
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# REQUEST / RESPONSE LOGGING MIDDLEWARE
-# ─────────────────────────────────────────────────────────────────────────────
-
 def _log_request_response(
     method: str,
     path: str,
@@ -194,7 +189,7 @@ def _log_request_response(
 ) -> None:
     """Log a structured summary of each API request."""
     logger.info(
-        "REQUEST  | method=%-6s path=%-20s status=%d duration=%.1fms",
+        "REQUEST  | method=%-6s path=%-22s status=%d duration=%.1fms",
         method, path, status_code, duration_ms,
     )
 
@@ -207,26 +202,23 @@ def create_app() -> Flask:
     """
     Flask application factory.
 
-    Creating the app via a factory function (rather than at module level)
-    ensures the model cache is populated lazily on the first request,
-    and allows the test suite to create a fresh app instance per test.
-
     Returns
     -------
     Flask
-        Configured Flask application instance.
+        Configured Flask application instance with all routes registered.
     """
     app = Flask(__name__)
     app.config["JSON_SORT_KEYS"] = False
 
-    # ── Pre-load model on startup ─────────────────────────────────────────────
+    # Warm up both caches at startup
     with app.app_context():
         try:
-            _get_model()   # warm up the LRU cache
+            _get_model()
+            _get_preprocessor()
         except Exception as exc:
             logger.warning(
-                "Could not pre-load model at startup: %s. "
-                "Model will be loaded on first request.",
+                "Could not pre-load artifacts at startup: %s. "
+                "They will be loaded on the first request.",
                 exc,
             )
 
@@ -236,17 +228,11 @@ def create_app() -> Flask:
 
     @app.route("/health", methods=["GET"])
     def health() -> Response:
-        """
-        Liveness & readiness check.
-
-        Returns
-        -------
-        JSON
-            ``{"status": "ok", "timestamp": "...", "model": "..."}``
-        """
+        """Liveness & readiness check."""
         t0 = time.perf_counter()
         try:
             _get_model()
+            _get_preprocessor()
             model_status = "loaded"
         except Exception:
             model_status = "unavailable"
@@ -266,43 +252,7 @@ def create_app() -> Flask:
 
     @app.route("/predict", methods=["POST"])
     def predict() -> Response:
-        """
-        Score a single loan application.
-
-        Request body (JSON)
-        ───────────────────
-        {
-          "loan_amount":    420000,
-          "property_value": null,        // null → missing appraisal flag
-          "income":         52000,
-          "Credit_Score":   580,
-          "LTV":            97.0,
-          "dtir1":          null,
-          "term":           360,
-          "loan_type":      "type1",
-          "loan_purpose":   "p1",
-          "Credit_Worthiness": "l1",
-          "occupancy_type": "pr",
-          "Neg_ammortization": "not_neg",
-          "interest_only":  "not_int",
-          "lump_sum_payment": "not_lpsm",
-          "construction_type": "sb",
-          "Secured_by":     "home",
-          "total_units":    "1U",
-          "co-applicant_credit_type": "EXP",
-          "submission_of_application": "to_inst",
-          "Region":         "south"
-        }
-
-        Response (JSON)
-        ───────────────
-        {
-          "default_probability":        0.8056,
-          "underwriting_recommendation": "REJECT / HIGH RISK",
-          "risk_score":                  165,
-          "scored_at":                  "2024-01-15T10:30:00.123456"
-        }
-        """
+        """Score a single loan application."""
         t0 = time.perf_counter()
 
         if not request.is_json:
@@ -315,13 +265,12 @@ def create_app() -> Flask:
         if data is None:
             return jsonify({"error": "Empty or malformed JSON body."}), 400
 
-        # Validate payload
         validation_errors = _validate_application(data)
         if validation_errors:
             logger.warning("Validation failed: %s", validation_errors)
             return jsonify({"errors": validation_errors}), 422
 
-        # Replace JSON null with numpy nan for pipeline compatibility
+        # Replace JSON null with np.nan for pipeline compatibility
         data = {
             k: (np.nan if v is None else v)
             for k, v in data.items()
@@ -334,13 +283,15 @@ def create_app() -> Flask:
             response = jsonify(result)
         except Exception as exc:
             logger.error(
-                "Scoring failed for application: %s\n%s",
-                data,
+                "Scoring failed: %s\n%s",
+                exc,
                 traceback.format_exc(),
             )
             status_code = 500
-            response = jsonify(
-                {"error": "Internal scoring error.", "detail": str(exc)})
+            response = jsonify({
+                "error":  "Internal scoring error.",
+                "detail": str(exc),
+            })
 
         duration = (time.perf_counter() - t0) * 1000
         _log_request_response("POST", "/predict", status_code, duration)
@@ -350,28 +301,7 @@ def create_app() -> Flask:
 
     @app.route("/predict/batch", methods=["POST"])
     def predict_batch() -> Response:
-        """
-        Score multiple loan applications in a single request.
-
-        Request body (JSON)
-        ───────────────────
-        [
-          { <application_1_fields> },
-          { <application_2_fields> },
-          ...
-        ]
-
-        Response (JSON)
-        ───────────────
-        {
-          "total":   2,
-          "results": [
-            { "index": 0, "default_probability": 0.12, ... },
-            { "index": 1, "default_probability": 0.87, ... }
-          ],
-          "scored_at": "2024-01-15T10:30:00.123456"
-        }
-        """
+        """Score multiple loan applications in a single request."""
         t0 = time.perf_counter()
 
         if not request.is_json:
@@ -383,14 +313,17 @@ def create_app() -> Flask:
         data = request.get_json(force=True)
         if not isinstance(data, list) or len(data) == 0:
             return (
-                jsonify({"error": "Request body must be a non-empty JSON array."}),
+                jsonify({
+                    "error": "Request body must be a non-empty JSON array."
+                }),
                 400,
             )
 
         if len(data) > 500:
             return (
-                jsonify(
-                    {"error": "Batch size exceeds maximum of 500 applications."}),
+                jsonify({
+                    "error": "Batch size exceeds maximum of 500 applications."
+                }),
                 413,
             )
 
@@ -398,12 +331,10 @@ def create_app() -> Flask:
         errors = []
 
         for idx, application in enumerate(data):
-            # Replace JSON nulls
             cleaned = {
                 k: (np.nan if v is None else v)
                 for k, v in application.items()
             }
-            # Per-item validation
             val_errors = _validate_application(cleaned)
             if val_errors:
                 errors.append({"index": idx, "errors": val_errors})
@@ -416,7 +347,11 @@ def create_app() -> Flask:
 
             try:
                 score = _score_single(cleaned)
-                results.append({"index": idx, "status": "scored", **score})
+                results.append({
+                    "index":  idx,
+                    "status": "scored",
+                    **score,
+                })
             except Exception as exc:
                 logger.error(
                     "Batch scoring failed at index %d: %s", idx, exc
@@ -428,7 +363,7 @@ def create_app() -> Flask:
                     "status": "failed",
                 })
 
-        status_code = 200 if not errors else 207  # 207 = Multi-Status
+        status_code = 200 if not errors else 207
         response_payload = {
             "total":      len(data),
             "successful": len([r for r in results if r.get("status") == "scored"]),
@@ -452,18 +387,7 @@ def create_app() -> Flask:
 
     @app.route("/model/info", methods=["GET"])
     def model_info() -> Response:
-        """
-        Return champion model metadata from the versioning registry.
-
-        Response (JSON)
-        ───────────────
-        {
-          "model_name": "random_forest",
-          "champion_version": "v1",
-          "versions_available": ["v1"],
-          "champion_metadata": { ... }
-        }
-        """
+        """Return champion model metadata from the versioning registry."""
         t0 = time.perf_counter()
         try:
             registry = get_registry_summary()
@@ -476,7 +400,9 @@ def create_app() -> Flask:
             payload = {
                 "model_name":         MODEL_NAME_RF,
                 "champion_version":   champion_ver,
-                "versions_available": list(model_entry.get("versions", {}).keys()),
+                "versions_available": list(
+                    model_entry.get("versions", {}).keys()
+                ),
                 "champion_metadata":  champion_meta,
             }
             status_code = 200
@@ -489,10 +415,15 @@ def create_app() -> Flask:
         return jsonify(payload), status_code
 
     # ─────────────────────────────────────────────────────────────────────────
+    # ERROR HANDLERS
+    # ─────────────────────────────────────────────────────────────────────────
 
     @app.errorhandler(404)
     def not_found(exc) -> Response:
-        return jsonify({"error": "Endpoint not found.", "path": request.path}), 404
+        return (
+            jsonify({"error": "Endpoint not found.", "path": request.path}),
+            404,
+        )
 
     @app.errorhandler(405)
     def method_not_allowed(exc) -> Response:
@@ -507,7 +438,9 @@ def create_app() -> Flask:
 
     @app.errorhandler(500)
     def internal_error(exc) -> Response:
-        logger.critical("Unhandled exception: %s", traceback.format_exc())
+        logger.critical(
+            "Unhandled exception: %s", traceback.format_exc()
+        )
         return jsonify({"error": "Internal server error."}), 500
 
     return app

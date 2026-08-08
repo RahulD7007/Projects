@@ -51,6 +51,12 @@ TEST_PROCESSED_PATH: Path = DATA_PROCESSED_DIR / "test_processed.csv"
 MODEL_PATH: Path = MODELS_DIR / "baseline_rf_model.joblib"
 METRICS_PATH: Path = REPORTS_DIR / "metrics.json"
 
+# ── NEW: Persisted fitted ColumnTransformer ───────────────────────────────────
+# Saved once during `make features`, reloaded by api.py and flask_app.py
+# so that single-row inference uses EXACTLY the same encoder/scaler/OHE
+# that was fitted on the full 118,936-row training split.
+PREPROCESSOR_PATH: Path = MODELS_DIR / "preprocessor.joblib"
+
 # ── Per-model metrics paths ───────────────────────────────────────────────────
 LR_METRICS_PATH: Path = LR_REPORT_DIR / "metrics.json"
 RF_METRICS_PATH: Path = RF_REPORT_DIR / "metrics.json"
@@ -65,8 +71,6 @@ ID_COL: str = "ID"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # LEAKAGE / DROPPED COLUMNS
-# Post-decision attributes unavailable at underwriting time.
-# Identified via 100% missingness in default class → target leakage.
 # ─────────────────────────────────────────────────────────────────────────────
 LEAKAGE_COLS: list[str] = [
     "rate_of_interest",
@@ -77,17 +81,13 @@ LEAKAGE_COLS: list[str] = [
 # ─────────────────────────────────────────────────────────────────────────────
 # FEATURE GROUPS
 # ─────────────────────────────────────────────────────────────────────────────
-
-# Columns whose missingness carries predictive signal
 MISSINGNESS_FLAG_COLS: list[str] = [
-    "property_value",   # → property_value_isna  (+0.41 corr with default)
-    "dtir1",            # → dtir1_isna
+    "property_value",
+    "dtir1",
 ]
 
-# ── NUMERIC FEATURES ──────────────────────────────────────────────────────────
 # SimpleImputer(median) → StandardScaler
-# NOTE: `age` is intentionally EXCLUDED — it contains string bands
-#       like '25-34', '35-44', '65-74' and must go to CATEGORICAL_FEATURES.
+# NOTE: `age` excluded — contains string bands like '25-34', '65-74'
 NUMERIC_FEATURES: list[str] = [
     "loan_amount",
     "property_value",
@@ -96,24 +96,20 @@ NUMERIC_FEATURES: list[str] = [
     "LTV",
     "dtir1",
     "term",
-    # Engineered features (added in features.py)
     "DTI_x_LTV",
     "loan_to_income",
 ]
 
-# ── BINARY FLAG FEATURES ──────────────────────────────────────────────────────
-# Already 0/1 integers after engineering → constant(0) fill, no scaling
+# Already 0/1 integers → constant(0) fill only
 BINARY_FLAG_FEATURES: list[str] = [
     "property_value_isna",
     "dtir1_isna",
 ]
 
-# ── CATEGORICAL FEATURES ──────────────────────────────────────────────────────
-# SimpleImputer(most_frequent) → OneHotEncoder(handle_unknown='ignore')
-# `age` is placed here because it stores ordinal string bands:
-#   '25-34' | '35-44' | '45-54' | '55-64' | '65-74' | '74+'
+# SimpleImputer(most_frequent) → OneHotEncoder
+# `age` placed here — ordinal string bands: '25-34'|'35-44'|...|'74+'
 CATEGORICAL_FEATURES: list[str] = [
-    "age",                          # FIX: moved from NUMERIC_FEATURES
+    "age",
     "loan_type",
     "loan_purpose",
     "Credit_Worthiness",
@@ -163,22 +159,21 @@ RF_PARAMS: dict = {
 
 # ── XGBoost ───────────────────────────────────────────────────────────────────
 XGB_PARAMS: dict = {
-    "n_estimators":      400,
-    "max_depth":         6,
-    "learning_rate":     0.05,
-    "subsample":         0.8,
-    "colsample_bytree":  0.8,
-    "min_child_weight":  10,
-    "scale_pos_weight":  3,        # ≈ n_negative / n_positive for class balance
-    "eval_metric":       "auc",
-    "use_label_encoder": False,
-    "random_state":      RANDOM_STATE,
+    "n_estimators":     400,
+    "max_depth":        6,
+    "learning_rate":    0.05,
+    "subsample":        0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 10,
+    "scale_pos_weight": 3,
+    "eval_metric":      "auc",
+    "random_state":     RANDOM_STATE,
     "n_jobs": -1,
-    "tree_method":       "hist",   # fast histogram method
+    "tree_method":      "hist",
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
-# RISK SCORING CONSTANTS  (used by api.py and flask_app.py)
+# RISK SCORING CONSTANTS
 # ─────────────────────────────────────────────────────────────────────────────
 RISK_SCORE_FLOOR: int = 100
 RISK_SCORE_CEILING: int = 200
@@ -193,6 +188,6 @@ FLASK_DEBUG: bool = False
 # ─────────────────────────────────────────────────────────────────────────────
 # LOGGING CONFIGURATION
 # ─────────────────────────────────────────────────────────────────────────────
-LOG_LEVEL: str = "DEBUG"   # Root capture level
-LOG_CONSOLE_LEVEL: str = "INFO"    # StreamHandler level
-LOG_FILE_LEVEL: str = "DEBUG"   # RotatingFileHandler level
+LOG_LEVEL: str = "DEBUG"
+LOG_CONSOLE_LEVEL: str = "INFO"
+LOG_FILE_LEVEL: str = "DEBUG"
