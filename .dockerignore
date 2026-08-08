@@ -1,0 +1,60 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# .dockerignore
+# Excludes files from Docker build context to keep image small and fast.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Virtual environment — never copy into image
+.venv/
+venv/
+env/
+
+# Git history
+.git/
+.gitignore
+.github/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+
+# Processed data — regenerated inside container during build
+data/processed/
+data/interim/
+
+# Model artifacts — regenerated inside container during build
+models/
+
+# Logs — generated at runtime
+logs/
+
+# Reports & figures — generated at runtime
+reports/
+
+# Notebooks — not needed in production API
+notebooks/
+
+# Tests — not needed in production image
+tests/
+
+# Documentation
+docs/
+references/
+README.md
+
+# IDE files
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+.pytest_cache/
+
+# Ruff cache
+.ruff_cache/

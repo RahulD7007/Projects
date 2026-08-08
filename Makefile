@@ -88,3 +88,23 @@ clean:
 	rm -f reports/figures/*.png
 	rm -f logs/*.log
 	@echo "Build artifacts removed."
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# Build Docker image locally
+docker-build:
+	docker build -t ml-eda-full-fledge:latest .
+
+# Run Docker container locally
+docker-run:
+	docker run -p 5000:5000 --name ml-eda-api ml-eda-full-fledge:latest
+
+# Stop and remove container
+docker-stop:
+	docker stop ml-eda-api && docker rm ml-eda-api
+
+# Build and run in one command
+docker-up: docker-build docker-run
+
+# Remove image
+docker-clean:
+	docker rmi ml-eda-full-fledge:latest	
