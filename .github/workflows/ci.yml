@@ -33,11 +33,19 @@ jobs:
           ruff check src/ tests/ || echo "⚠️ Lint warnings found, continuing..."
         continue-on-error: true
 
-      # ✅ Train models BEFORE running tests
-      # This creates the .joblib files on GitHub's Linux computer
+      # ✅ Step 1 — Download / prepare raw data
+      - name: Prepare Dataset
+        run: python -m src.dataset
+
+      # ✅ Step 2 — Run feature engineering
+      - name: Run Feature Engineering
+        run: python -m src.features
+
+      # ✅ Step 3 — Train models
       - name: Train Models
         run: python -m src.train
 
+      # ✅ Step 4 — Now run tests (models exist)
       - name: Run Pytest Unit & Integration Tests
         run: |
           if [ -d tests ] && [ "$(ls -A tests)" ]; then
