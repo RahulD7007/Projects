@@ -103,5 +103,5 @@ jobs:
           context: .
           push: true
           tags: |
-            nitins1/ml-eda-full-fledge:latest
-            nitins1/ml-eda-full-fledge:${{ github.sha }}
+            rahuld7007/ml-eda-full-fledge:latest
+            rahuld7007/ml-eda-full-fledge:${{ github.sha }}
