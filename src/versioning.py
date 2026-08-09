@@ -21,7 +21,7 @@ Registry schema (model_registry.json)
         "v1": {
           "version":    "v1",
           "model_name": "random_forest",
-          "artifact":   "models/registry/random_forest/random_forest_v1.joblib",
+          "artifact":   "random_forest/random_forest_v1.joblib",
           "roc_auc":    0.8851,
           "pr_auc":     0.8271,
           "accuracy":   0.8792,
@@ -99,6 +99,43 @@ def _next_version(existing_versions: dict) -> str:
     return f"v{latest + 1}"
 
 
+def _resolve_artifact_path(stored_path: str) -> Path:
+    """
+    Always resolve the artifact path relative to REGISTRY_DIR.
+
+    This fixes the issue where Windows absolute paths are stored in the
+    JSON and then fail on Linux CI runners.
+
+    It takes only the last two parts from whatever path is stored
+    (model_folder/filename) and rebuilds using the current REGISTRY_DIR.
+
+    Examples
+    --------
+    stored_path = "random_forest/random_forest_v1.joblib"
+    → REGISTRY_DIR / "random_forest" / "random_forest_v1.joblib"
+
+    stored_path = "D:\\old\\path\\random_forest\\random_forest_v1.joblib"
+    → REGISTRY_DIR / "random_forest" / "random_forest_v1.joblib"
+
+    Parameters
+    ----------
+    stored_path : str
+        The path string stored in model_registry.json.
+
+    Returns
+    -------
+    Path
+        Correct absolute path for the current machine.
+    """
+    stored = Path(stored_path)
+    # Get the model folder name  e.g. "random_forest"
+    model_folder = stored.parent.name
+    # Get just the filename      e.g. "random_forest_v1.joblib"
+    filename = stored.name
+    # Rebuild using current machine's REGISTRY_DIR
+    return REGISTRY_DIR / model_folder / filename
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # PUBLIC API
 # ─────────────────────────────────────────────────────────────────────────────
@@ -168,10 +205,14 @@ def register_model(
     )
 
     # ── Build metadata record ─────────────────────────────────────────────────
+    # ✅ Store only "model_name/model_name_version.joblib"
+    # This is a short relative path that works on Windows, Linux, and Mac
+    artifact_relative = f"{model_name}/{model_name}_{version}.joblib"
+
     record: dict[str, Any] = {
         "version":    version,
         "model_name": model_name,
-        "artifact":   str(artifact_path),
+        "artifact":   artifact_relative,
         "trained_at": datetime.now().isoformat(timespec="seconds"),
         "n_train":    n_train,
         "n_test":     n_test,
@@ -235,9 +276,9 @@ def load_champion_model(model_name: str) -> object:
     if champion_ver is None:
         raise KeyError(f"No champion set for model '{model_name}'.")
 
-    artifact_path = Path(
-        registry["models"][model_name]["versions"][champion_ver]["artifact"]
-    )
+    # ✅ _resolve_artifact_path fixes any old Windows paths automatically
+    stored_path = registry["models"][model_name]["versions"][champion_ver]["artifact"]
+    artifact_path = _resolve_artifact_path(stored_path)
 
     if not artifact_path.exists():
         raise FileNotFoundError(
@@ -272,13 +313,14 @@ def load_model_version(model_name: str, version: str) -> object:
     registry = _load_registry()
 
     try:
-        artifact_path = Path(
-            registry["models"][model_name]["versions"][version]["artifact"]
-        )
+        stored_path = registry["models"][model_name]["versions"][version]["artifact"]
     except KeyError as exc:
         raise KeyError(
             f"Version '{version}' of model '{model_name}' not found."
         ) from exc
+
+    # ✅ Fix any old Windows paths automatically
+    artifact_path = _resolve_artifact_path(stored_path)
 
     logger.info("Loaded '%s' %s", model_name, version)
     return joblib.load(artifact_path)
@@ -381,8 +423,10 @@ def delete_model_version(model_name: str, version: str) -> None:
             f"Version '{version}' not found for model '{model_name}'."
         )
 
-    # Delete artifact from disk
-    artifact_path = Path(model_entry["versions"][version]["artifact"])
+    # ✅ Fix any old Windows paths automatically
+    stored_path = model_entry["versions"][version]["artifact"]
+    artifact_path = _resolve_artifact_path(stored_path)
+
     if artifact_path.exists():
         artifact_path.unlink()
         logger.info("Deleted artifact: %s", artifact_path)

@@ -33,6 +33,11 @@ jobs:
           ruff check src/ tests/ || echo "⚠️ Lint warnings found, continuing..."
         continue-on-error: true
 
+      # ✅ Train models BEFORE running tests
+      # This creates the .joblib files on GitHub's Linux computer
+      - name: Train Models
+        run: python -m src.train
+
       - name: Run Pytest Unit & Integration Tests
         run: |
           if [ -d tests ] && [ "$(ls -A tests)" ]; then
@@ -56,7 +61,6 @@ jobs:
   docker-build:
     needs: build-and-test
     runs-on: ubuntu-latest
-    # Only build Docker if Dockerfile exists
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
