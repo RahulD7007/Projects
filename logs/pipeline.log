@@ -3187,3 +3187,591 @@ could not convert string to float: '65-74'
 2026-08-08 18:22:16 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
 2026-08-08 18:22:16 | INFO     | __main__:135 | Application scored | prob=0.8634 | recommendation=REJECT / HIGH RISK
 2026-08-08 18:22:16 | INFO     | __main__:167 | CLI API inference complete.
+2026-08-09 08:02:20 | INFO     | __main__:285 | Feature engineering pipeline started.
+2026-08-09 08:02:21 | DEBUG    | __main__:73 | Starting feature engineering | input shape=(148670, 34)
+2026-08-09 08:02:22 | DEBUG    | __main__:80 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-09 08:02:22 | DEBUG    | __main__:88 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-09 08:02:22 | DEBUG    | __main__:88 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-09 08:02:22 | DEBUG    | __main__:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:02:22 | DEBUG    | __main__:105 | Feature 'loan_to_income' created.
+2026-08-09 08:02:22 | INFO     | __main__:107 | Feature engineering complete | output shape=(148670, 34)
+2026-08-09 08:02:22 | DEBUG    | __main__:196 | Splitting data | test_size=0.20 | random_state=42
+2026-08-09 08:02:23 | INFO     | __main__:207 | Train=118936 samples | Test=29734 samples
+2026-08-09 08:02:23 | DEBUG    | __main__:166 | Preprocessing pipeline constructed.
+2026-08-09 08:02:23 | DEBUG    | __main__:214 | Fitting ColumnTransformer on training data only...
+2026-08-09 08:02:25 | INFO     | __main__:223 | Fitted preprocessor saved → 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:02:25 | INFO     | __main__:228 | Preprocessing complete | 52 features generated.
+2026-08-09 08:02:36 | INFO     | __main__:317 | Feature engineering pipeline complete.
+2026-08-09 08:02:48 | INFO     | __main__:62 | ======================================================================
+2026-08-09 08:02:48 | INFO     | __main__:63 | MODEL TRAINING PIPELINE STARTED
+2026-08-09 08:02:48 | INFO     | __main__:64 | ======================================================================
+2026-08-09 08:02:48 | INFO     | __main__:67 | Loading processed dataset artifacts...
+2026-08-09 08:02:50 | INFO     | __main__:71 | Loaded train=118936 rows | test=29734 rows
+2026-08-09 08:02:50 | INFO     | __main__:87 | ──────────────────────────────────────────────────
+2026-08-09 08:02:50 | INFO     | src.modeling.train:121 | Training Logistic Regression | params={'max_iter': 1000, 'class_weight': 'balanced', 'random_state': 42, 'solver': 'lbfgs', 'C': 0.1}
+2026-08-09 08:02:52 | INFO     | src.modeling.train:127 | Logistic Regression training complete.
+2026-08-09 08:02:52 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8459, 'pr_auc': 0.7712, 'accuracy': 0.8305, 'f1_score': 0.6565}
+2026-08-09 08:02:52 | INFO     | src.modeling.train:130 | LR Results → ROC-AUC: 0.8459 | PR-AUC: 0.7712 | Accuracy: 0.8305 | F1: 0.6565
+2026-08-09 08:02:52 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v3.joblib (version=v3)
+2026-08-09 08:02:52 | INFO     | src.versioning:187 | Model 'logistic_regression' champion promoted → v3 (ROC-AUC: 0.8459)
+2026-08-09 08:02:52 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-09 08:02:52 | INFO     | src.versioning:195 | Registered 'logistic_regression' v3 | ROC-AUC=0.8459 | PR-AUC=0.7712
+2026-08-09 08:02:52 | INFO     | __main__:95 | ──────────────────────────────────────────────────
+2026-08-09 08:02:52 | INFO     | src.modeling.train:177 | Training Random Forest | params={'n_estimators': 300, 'max_depth': 12, 'min_samples_leaf': 20, 'max_features': 'sqrt', 'class_weight': 'balanced', 'random_state': 42, 'n_jobs': -1}
+2026-08-09 08:03:07 | INFO     | src.modeling.train:183 | Random Forest training complete.
+2026-08-09 08:03:07 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8863, 'pr_auc': 0.8284, 'accuracy': 0.8727, 'f1_score': 0.7291}
+2026-08-09 08:03:07 | INFO     | src.modeling.train:186 | RF Results → ROC-AUC: 0.8863 | PR-AUC: 0.8284 | Accuracy: 0.8727 | F1: 0.7291
+2026-08-09 08:03:08 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib (version=v3)
+2026-08-09 08:03:08 | INFO     | src.versioning:187 | Model 'random_forest' champion promoted → v3 (ROC-AUC: 0.8863)
+2026-08-09 08:03:08 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-09 08:03:08 | INFO     | src.versioning:195 | Registered 'random_forest' v3 | ROC-AUC=0.8863 | PR-AUC=0.8284
+2026-08-09 08:03:08 | INFO     | __main__:103 | ──────────────────────────────────────────────────
+2026-08-09 08:03:08 | INFO     | src.modeling.train:233 | Training XGBoost | params={'n_estimators': 400, 'max_depth': 6, 'learning_rate': 0.05, 'subsample': 0.8, 'colsample_bytree': 0.8, 'min_child_weight': 10, 'scale_pos_weight': 3, 'eval_metric': 'auc', 'random_state': 42, 'n_jobs': -1, 'tree_method': 'hist'}
+2026-08-09 08:03:21 | INFO     | src.modeling.train:246 | XGBoost training complete.
+2026-08-09 08:03:21 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8953, 'pr_auc': 0.8459, 'accuracy': 0.8803, 'f1_score': 0.7492}
+2026-08-09 08:03:21 | INFO     | src.modeling.train:249 | XGB Results → ROC-AUC: 0.8953 | PR-AUC: 0.8459 | Accuracy: 0.8803 | F1: 0.7492
+2026-08-09 08:03:21 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v3.joblib (version=v3)
+2026-08-09 08:03:21 | INFO     | src.versioning:187 | Model 'xgboost' champion promoted → v3 (ROC-AUC: 0.8953)
+2026-08-09 08:03:21 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-09 08:03:21 | INFO     | src.versioning:195 | Registered 'xgboost' v3 | ROC-AUC=0.8953 | PR-AUC=0.8459
+2026-08-09 08:03:21 | INFO     | src.modeling.train:290 | Serialized model artifact → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-09 08:03:21 | INFO     | __main__:138 | Best model: 'xgboost' serialized → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-09 08:03:21 | INFO     | __main__:143 | Training pipeline complete.
+2026-08-09 08:03:28 | INFO     | __main__:15 | Batch prediction inference started.
+2026-08-09 08:03:28 | INFO     | __main__:18 | Loading test dataset from 'D:\VSCode_Projects\Projects\data\processed\test_processed.csv'
+2026-08-09 08:03:28 | INFO     | __main__:30 | Test dataset loaded | 29734 rows
+2026-08-09 08:03:28 | INFO     | __main__:33 | Loading champion model from versioning registry...
+2026-08-09 08:03:29 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-09 08:03:29 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:03:32 | INFO     | __main__:43 | Running batch inference on 29734 samples...
+2026-08-09 08:03:32 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:03:33 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:03:33 | INFO     | __main__:45 | Inference complete | predicted_defaults=6645 / 29734 (22.35%)
+2026-08-09 08:03:33 | INFO     | __main__:61 | Batch prediction inference complete.
+2026-08-09 08:03:57 | INFO     | __main__:191 | Report generation pipeline started.
+2026-08-09 08:03:58 | INFO     | __main__:216 | Generating report for: Logistic Regression
+2026-08-09 08:03:58 | INFO     | src.versioning:247 | Loaded champion 'logistic_regression' v3 from 'D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v3.joblib'
+2026-08-09 08:03:58 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:03:58 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.4062 | predicted_defaults=7349
+2026-08-09 08:03:58 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\logistic_regression\metrics.json'
+2026-08-09 08:04:01 | DEBUG    | src.plots:132 | Saved ROC curve → D:\VSCode_Projects\Projects\reports\models\logistic_regression\figures\roc_curve.png
+2026-08-09 08:04:02 | DEBUG    | src.plots:180 | Saved PR curve → D:\VSCode_Projects\Projects\reports\models\logistic_regression\figures\pr_curve.png
+2026-08-09 08:04:02 | DEBUG    | src.plots:220 | Saved confusion matrix → D:\VSCode_Projects\Projects\reports\models\logistic_regression\figures\confusion_matrix.png
+2026-08-09 08:04:02 | INFO     | __main__:177 | [Logistic Regression] ROC-AUC=0.8459 | PR-AUC=0.7712 | Accuracy=0.8305 | F1=0.6565
+2026-08-09 08:04:02 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:04:02 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.4062 | predicted_defaults=7349
+2026-08-09 08:04:02 | INFO     | __main__:216 | Generating report for: Random Forest
+2026-08-09 08:04:02 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:04:03 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:04:03 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:04:03 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\random_forest\metrics.json'
+2026-08-09 08:04:04 | DEBUG    | src.plots:132 | Saved ROC curve → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\roc_curve.png
+2026-08-09 08:04:04 | DEBUG    | src.plots:180 | Saved PR curve → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\pr_curve.png
+2026-08-09 08:04:05 | DEBUG    | src.plots:220 | Saved confusion matrix → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\confusion_matrix.png
+2026-08-09 08:04:06 | DEBUG    | src.plots:273 | Saved feature importance → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\feature_importance.png
+2026-08-09 08:04:06 | INFO     | __main__:177 | [Random Forest] ROC-AUC=0.8863 | PR-AUC=0.8284 | Accuracy=0.8727 | F1=0.7291
+2026-08-09 08:04:06 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:04:06 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:04:06 | INFO     | __main__:216 | Generating report for: XGBoost
+2026-08-09 08:04:06 | INFO     | src.versioning:247 | Loaded champion 'xgboost' v3 from 'D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v3.joblib'
+2026-08-09 08:04:06 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:04:07 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3656 | predicted_defaults=6868
+2026-08-09 08:04:07 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\xgboost\metrics.json'
+2026-08-09 08:04:07 | DEBUG    | src.plots:132 | Saved ROC curve → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\roc_curve.png
+2026-08-09 08:04:08 | DEBUG    | src.plots:180 | Saved PR curve → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\pr_curve.png
+2026-08-09 08:04:08 | DEBUG    | src.plots:220 | Saved confusion matrix → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\confusion_matrix.png
+2026-08-09 08:04:09 | DEBUG    | src.plots:273 | Saved feature importance → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\feature_importance.png
+2026-08-09 08:04:09 | INFO     | __main__:177 | [XGBoost] ROC-AUC=0.8953 | PR-AUC=0.8459 | Accuracy=0.8803 | F1=0.7492
+2026-08-09 08:04:09 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:04:10 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3656 | predicted_defaults=6868
+2026-08-09 08:04:10 | INFO     | __main__:243 | Generating cross-model comparison figures...
+2026-08-09 08:04:10 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\comparison\all_models_metrics.json'
+2026-08-09 08:04:10 | DEBUG    | src.plots:333 | Saved ROC comparison → D:\VSCode_Projects\Projects\reports\models\comparison\figures\roc_curve_comparison.png
+2026-08-09 08:04:11 | DEBUG    | src.plots:380 | Saved PR comparison → D:\VSCode_Projects\Projects\reports\models\comparison\figures\pr_curve_comparison.png
+2026-08-09 08:04:12 | DEBUG    | src.plots:458 | Saved metrics comparison bar chart → D:\VSCode_Projects\Projects\reports\models\comparison\figures\metrics_comparison_bar.png
+2026-08-09 08:04:12 | INFO     | __main__:290 | Report generation complete.
+2026-08-09 08:04:21 | INFO     | __main__:153 | CLI API inference started.
+2026-08-09 08:04:21 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 23)
+2026-08-09 08:04:21 | DEBUG    | src.features:80 | Dropped columns: ['ID']
+2026-08-09 08:04:21 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:04:21 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:04:21 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:04:21 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:04:21 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:04:21 | INFO     | src.features:273 | Fitted preprocessor loaded from 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:04:21 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-09 08:04:21 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:04:22 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:04:22 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:04:22 | INFO     | __main__:135 | Application scored | prob=0.8634 | recommendation=REJECT / HIGH RISK
+2026-08-09 08:04:22 | INFO     | __main__:167 | CLI API inference complete.
+2026-08-09 08:04:31 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:04:31 | INFO     | src.features:273 | Fitted preprocessor loaded from 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:05:16 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:05:16 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:05:16 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:05:16 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:05:16 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:05:16 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:05:16 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:05:16 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:05:24 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:05:24 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:05:24 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:05:24 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:05:24 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:05:24 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:05:24 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:05:24 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.2404 | predicted_defaults=0
+2026-08-09 08:05:34 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:05:34 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:05:34 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:05:34 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:05:34 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:05:34 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:05:34 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:05:34 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:05:34 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:05:34 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:05:34 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:05:34 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:05:34 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:05:34 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:05:34 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:05:34 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.2375 | predicted_defaults=0
+2026-08-09 08:05:59 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:05:59 | INFO     | src.features:273 | Fitted preprocessor loaded from 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:06:21 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(148670, 34)
+2026-08-09 08:06:22 | DEBUG    | src.features:80 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-09 08:06:22 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-09 08:06:22 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-09 08:06:22 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:22 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:22 | INFO     | src.features:107 | Feature engineering complete | output shape=(148670, 34)
+2026-08-09 08:06:22 | DEBUG    | src.features:196 | Splitting data | test_size=0.20 | random_state=42
+2026-08-09 08:06:22 | INFO     | src.features:207 | Train=118936 samples | Test=29734 samples
+2026-08-09 08:06:22 | DEBUG    | src.features:166 | Preprocessing pipeline constructed.
+2026-08-09 08:06:22 | DEBUG    | src.features:214 | Fitting ColumnTransformer on training data only...
+2026-08-09 08:06:24 | INFO     | src.features:223 | Fitted preprocessor saved → 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:06:24 | INFO     | src.features:228 | Preprocessing complete | 52 features generated.
+2026-08-09 08:06:24 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:06:25 | INFO     | src.features:273 | Fitted preprocessor loaded from 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:06:25 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:25 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:25 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:25 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:25 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:25 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:25 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:25 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:25 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:25 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:25 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:25 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:25 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:25 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:25 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:25 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:25 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:25 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:25 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:25 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:06:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:06:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:27 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:27 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:27 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:27 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:27 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:27 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:27 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:27 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:27 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:06:27 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:27 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:27 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:06:27 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:27 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:27 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:27 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:27 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:06:27 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:06:27 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:27 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:06:27 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:06:27 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:06:27 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:06:27 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:06:27 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:06:27 | INFO     | src.modeling.train:177 | Training Random Forest | params={'n_estimators': 300, 'max_depth': 12, 'min_samples_leaf': 20, 'max_features': 'sqrt', 'class_weight': 'balanced', 'random_state': 42, 'n_jobs': -1}
+2026-08-09 08:06:45 | INFO     | src.modeling.train:183 | Random Forest training complete.
+2026-08-09 08:06:45 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8863, 'pr_auc': 0.8284, 'accuracy': 0.8727, 'f1_score': 0.7291}
+2026-08-09 08:06:45 | INFO     | src.modeling.train:186 | RF Results → ROC-AUC: 0.8863 | PR-AUC: 0.8284 | Accuracy: 0.8727 | F1: 0.7291
+2026-08-09 08:06:45 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:45 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:46 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:46 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:46 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:46 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:46 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:47 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:47 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:47 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:47 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:47 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:47 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:48 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:48 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.30
+2026-08-09 08:06:48 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=14920
+2026-08-09 08:06:48 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:49 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:49 | INFO     | src.modeling.predict:48 | Loading model artifact from 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-09 08:06:49 | ERROR    | src.modeling.predict:43 | Model artifact not found at 'C:\Users\rahul\AppData\Local\Temp\pytest-of-RAJE7007\pytest-9\test_load_model_raises_on_miss0\nonexistent_model.joblib'
+2026-08-09 08:06:49 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-09 08:06:49 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:06:49 | INFO     | src.modeling.predict:67 | Loading champion model: 'logistic_regression'
+2026-08-09 08:06:49 | INFO     | src.versioning:247 | Loaded champion 'logistic_regression' v3 from 'D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v3.joblib'
+2026-08-09 08:06:49 | INFO     | src.modeling.predict:67 | Loading champion model: 'xgboost'
+2026-08-09 08:06:49 | INFO     | src.versioning:247 | Loaded champion 'xgboost' v3 from 'D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v3.joblib'
+2026-08-09 08:06:49 | INFO     | src.modeling.predict:67 | Loading champion model: 'nonexistent_model_xyz'
+2026-08-09 08:06:49 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:50 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:50 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:06:50 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:06:52 | INFO     | src.versioning:164 | Model artifact saved → C:\Users\rahul\AppData\Local\Temp\pytest-of-RAJE7007\pytest-9\test_register_creates_artifact0\test_rf\test_rf_v1.joblib (version=v1)
+2026-08-09 08:06:52 | INFO     | src.versioning:187 | Model 'test_rf' champion promoted → v1 (ROC-AUC: 0.8800)
+2026-08-09 08:06:52 | DEBUG    | src.versioning:79 | Registry persisted → C:\Users\rahul\AppData\Local\Temp\pytest-of-RAJE7007\pytest-9\test_register_creates_artifact0\model_registry.json
+2026-08-09 08:06:52 | INFO     | src.versioning:195 | Registered 'test_rf' v1 | ROC-AUC=0.8800 | PR-AUC=0.8200
+2026-08-09 08:07:20 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(148670, 34)
+2026-08-09 08:07:20 | DEBUG    | src.features:80 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-09 08:07:20 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-09 08:07:20 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-09 08:07:20 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:20 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:20 | INFO     | src.features:107 | Feature engineering complete | output shape=(148670, 34)
+2026-08-09 08:07:20 | DEBUG    | src.features:196 | Splitting data | test_size=0.20 | random_state=42
+2026-08-09 08:07:21 | INFO     | src.features:207 | Train=118936 samples | Test=29734 samples
+2026-08-09 08:07:21 | DEBUG    | src.features:166 | Preprocessing pipeline constructed.
+2026-08-09 08:07:21 | DEBUG    | src.features:214 | Fitting ColumnTransformer on training data only...
+2026-08-09 08:07:23 | INFO     | src.features:223 | Fitted preprocessor saved → 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:07:23 | INFO     | src.features:228 | Preprocessing complete | 52 features generated.
+2026-08-09 08:07:24 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:07:25 | INFO     | src.features:273 | Fitted preprocessor loaded from 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:07:25 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:25 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:25 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:25 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:25 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:25 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:25 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:25 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:25 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:25 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:25 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:25 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:25 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:25 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:25 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:25 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:25 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:25 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:25 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:26 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:26 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:26 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:26 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:26 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:26 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:26 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:26 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:27 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:07:27 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:27 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:27 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:27 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:27 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:27 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:27 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:27 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:27 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:27 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:27 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:27 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:27 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:27 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:27 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:27 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:07:27 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:27 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:27 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:27 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:27 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:27 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:27 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:28 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:28 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:28 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:28 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:28 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:28 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:07:28 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 0 missing (0.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:28 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:28 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3151 | predicted_defaults=0
+2026-08-09 08:07:28 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 22)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:07:28 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:07:28 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:07:28 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:07:28 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:07:29 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:07:29 | INFO     | src.modeling.train:177 | Training Random Forest | params={'n_estimators': 300, 'max_depth': 12, 'min_samples_leaf': 20, 'max_features': 'sqrt', 'class_weight': 'balanced', 'random_state': 42, 'n_jobs': -1}
+2026-08-09 08:07:46 | INFO     | src.modeling.train:183 | Random Forest training complete.
+2026-08-09 08:07:47 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8863, 'pr_auc': 0.8284, 'accuracy': 0.8727, 'f1_score': 0.7291}
+2026-08-09 08:07:47 | INFO     | src.modeling.train:186 | RF Results → ROC-AUC: 0.8863 | PR-AUC: 0.8284 | Accuracy: 0.8727 | F1: 0.7291
+2026-08-09 08:07:47 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:47 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:47 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:48 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:48 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:48 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:48 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:49 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:49 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:49 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:49 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:50 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:50 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:50 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:50 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.30
+2026-08-09 08:07:51 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=14920
+2026-08-09 08:07:51 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:51 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:51 | INFO     | src.modeling.predict:48 | Loading model artifact from 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-09 08:07:51 | ERROR    | src.modeling.predict:43 | Model artifact not found at 'C:\Users\rahul\AppData\Local\Temp\pytest-of-RAJE7007\pytest-10\test_load_model_raises_on_miss0\nonexistent_model.joblib'
+2026-08-09 08:07:51 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-09 08:07:51 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v3 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v3.joblib'
+2026-08-09 08:07:52 | INFO     | src.modeling.predict:67 | Loading champion model: 'logistic_regression'
+2026-08-09 08:07:52 | INFO     | src.versioning:247 | Loaded champion 'logistic_regression' v3 from 'D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v3.joblib'
+2026-08-09 08:07:52 | INFO     | src.modeling.predict:67 | Loading champion model: 'xgboost'
+2026-08-09 08:07:52 | INFO     | src.versioning:247 | Loaded champion 'xgboost' v3 from 'D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v3.joblib'
+2026-08-09 08:07:52 | INFO     | src.modeling.predict:67 | Loading champion model: 'nonexistent_model_xyz'
+2026-08-09 08:07:52 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:53 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:53 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:07:53 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:07:55 | INFO     | src.versioning:164 | Model artifact saved → C:\Users\rahul\AppData\Local\Temp\pytest-of-RAJE7007\pytest-10\test_register_creates_artifact0\test_rf\test_rf_v1.joblib (version=v1)
+2026-08-09 08:07:55 | INFO     | src.versioning:187 | Model 'test_rf' champion promoted → v1 (ROC-AUC: 0.8800)
+2026-08-09 08:07:55 | DEBUG    | src.versioning:79 | Registry persisted → C:\Users\rahul\AppData\Local\Temp\pytest-of-RAJE7007\pytest-10\test_register_creates_artifact0\model_registry.json
+2026-08-09 08:07:55 | INFO     | src.versioning:195 | Registered 'test_rf' v1 | ROC-AUC=0.8800 | PR-AUC=0.8200
+2026-08-09 08:08:30 | INFO     | __main__:285 | Feature engineering pipeline started.
+2026-08-09 08:08:31 | DEBUG    | __main__:73 | Starting feature engineering | input shape=(148670, 34)
+2026-08-09 08:08:31 | DEBUG    | __main__:80 | Dropped columns: ['rate_of_interest', 'Interest_rate_spread', 'Upfront_charges', 'ID']
+2026-08-09 08:08:31 | DEBUG    | __main__:88 | Flag 'property_value_isna' created | 15098 missing (10.2%)
+2026-08-09 08:08:31 | DEBUG    | __main__:88 | Flag 'dtir1_isna' created | 24121 missing (16.2%)
+2026-08-09 08:08:31 | DEBUG    | __main__:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:08:31 | DEBUG    | __main__:105 | Feature 'loan_to_income' created.
+2026-08-09 08:08:31 | INFO     | __main__:107 | Feature engineering complete | output shape=(148670, 34)
+2026-08-09 08:08:31 | DEBUG    | __main__:196 | Splitting data | test_size=0.20 | random_state=42
+2026-08-09 08:08:31 | INFO     | __main__:207 | Train=118936 samples | Test=29734 samples
+2026-08-09 08:08:31 | DEBUG    | __main__:166 | Preprocessing pipeline constructed.
+2026-08-09 08:08:31 | DEBUG    | __main__:214 | Fitting ColumnTransformer on training data only...
+2026-08-09 08:08:33 | INFO     | __main__:223 | Fitted preprocessor saved → 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:08:33 | INFO     | __main__:228 | Preprocessing complete | 52 features generated.
+2026-08-09 08:08:44 | INFO     | __main__:317 | Feature engineering pipeline complete.
+2026-08-09 08:08:49 | INFO     | __main__:62 | ======================================================================
+2026-08-09 08:08:49 | INFO     | __main__:63 | MODEL TRAINING PIPELINE STARTED
+2026-08-09 08:08:49 | INFO     | __main__:64 | ======================================================================
+2026-08-09 08:08:49 | INFO     | __main__:67 | Loading processed dataset artifacts...
+2026-08-09 08:08:51 | INFO     | __main__:71 | Loaded train=118936 rows | test=29734 rows
+2026-08-09 08:08:51 | INFO     | __main__:87 | ──────────────────────────────────────────────────
+2026-08-09 08:08:51 | INFO     | src.modeling.train:121 | Training Logistic Regression | params={'max_iter': 1000, 'class_weight': 'balanced', 'random_state': 42, 'solver': 'lbfgs', 'C': 0.1}
+2026-08-09 08:08:54 | INFO     | src.modeling.train:127 | Logistic Regression training complete.
+2026-08-09 08:08:54 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8459, 'pr_auc': 0.7712, 'accuracy': 0.8305, 'f1_score': 0.6565}
+2026-08-09 08:08:54 | INFO     | src.modeling.train:130 | LR Results → ROC-AUC: 0.8459 | PR-AUC: 0.7712 | Accuracy: 0.8305 | F1: 0.6565
+2026-08-09 08:08:54 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v4.joblib (version=v4)
+2026-08-09 08:08:54 | INFO     | src.versioning:187 | Model 'logistic_regression' champion promoted → v4 (ROC-AUC: 0.8459)
+2026-08-09 08:08:54 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-09 08:08:54 | INFO     | src.versioning:195 | Registered 'logistic_regression' v4 | ROC-AUC=0.8459 | PR-AUC=0.7712
+2026-08-09 08:08:54 | INFO     | __main__:95 | ──────────────────────────────────────────────────
+2026-08-09 08:08:54 | INFO     | src.modeling.train:177 | Training Random Forest | params={'n_estimators': 300, 'max_depth': 12, 'min_samples_leaf': 20, 'max_features': 'sqrt', 'class_weight': 'balanced', 'random_state': 42, 'n_jobs': -1}
+2026-08-09 08:09:10 | INFO     | src.modeling.train:183 | Random Forest training complete.
+2026-08-09 08:09:10 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8863, 'pr_auc': 0.8284, 'accuracy': 0.8727, 'f1_score': 0.7291}
+2026-08-09 08:09:10 | INFO     | src.modeling.train:186 | RF Results → ROC-AUC: 0.8863 | PR-AUC: 0.8284 | Accuracy: 0.8727 | F1: 0.7291
+2026-08-09 08:09:11 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v4.joblib (version=v4)
+2026-08-09 08:09:11 | INFO     | src.versioning:187 | Model 'random_forest' champion promoted → v4 (ROC-AUC: 0.8863)
+2026-08-09 08:09:11 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-09 08:09:11 | INFO     | src.versioning:195 | Registered 'random_forest' v4 | ROC-AUC=0.8863 | PR-AUC=0.8284
+2026-08-09 08:09:11 | INFO     | __main__:103 | ──────────────────────────────────────────────────
+2026-08-09 08:09:11 | INFO     | src.modeling.train:233 | Training XGBoost | params={'n_estimators': 400, 'max_depth': 6, 'learning_rate': 0.05, 'subsample': 0.8, 'colsample_bytree': 0.8, 'min_child_weight': 10, 'scale_pos_weight': 3, 'eval_metric': 'auc', 'random_state': 42, 'n_jobs': -1, 'tree_method': 'hist'}
+2026-08-09 08:09:23 | INFO     | src.modeling.train:246 | XGBoost training complete.
+2026-08-09 08:09:23 | DEBUG    | src.modeling.train:88 | Evaluation metrics: {'roc_auc': 0.8953, 'pr_auc': 0.8459, 'accuracy': 0.8803, 'f1_score': 0.7492}
+2026-08-09 08:09:23 | INFO     | src.modeling.train:249 | XGB Results → ROC-AUC: 0.8953 | PR-AUC: 0.8459 | Accuracy: 0.8803 | F1: 0.7492
+2026-08-09 08:09:23 | INFO     | src.versioning:164 | Model artifact saved → D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v4.joblib (version=v4)
+2026-08-09 08:09:23 | INFO     | src.versioning:187 | Model 'xgboost' champion promoted → v4 (ROC-AUC: 0.8953)
+2026-08-09 08:09:23 | DEBUG    | src.versioning:79 | Registry persisted → D:\VSCode_Projects\Projects\models\registry\model_registry.json
+2026-08-09 08:09:23 | INFO     | src.versioning:195 | Registered 'xgboost' v4 | ROC-AUC=0.8953 | PR-AUC=0.8459
+2026-08-09 08:09:23 | INFO     | src.modeling.train:290 | Serialized model artifact → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-09 08:09:23 | INFO     | __main__:138 | Best model: 'xgboost' serialized → 'D:\VSCode_Projects\Projects\models\baseline_rf_model.joblib'
+2026-08-09 08:09:23 | INFO     | __main__:143 | Training pipeline complete.
+2026-08-09 08:09:25 | INFO     | __main__:15 | Batch prediction inference started.
+2026-08-09 08:09:25 | INFO     | __main__:18 | Loading test dataset from 'D:\VSCode_Projects\Projects\data\processed\test_processed.csv'
+2026-08-09 08:09:26 | INFO     | __main__:30 | Test dataset loaded | 29734 rows
+2026-08-09 08:09:26 | INFO     | __main__:33 | Loading champion model from versioning registry...
+2026-08-09 08:09:26 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-09 08:09:26 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v4 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v4.joblib'
+2026-08-09 08:09:30 | INFO     | __main__:43 | Running batch inference on 29734 samples...
+2026-08-09 08:09:30 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:09:30 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:09:30 | INFO     | __main__:45 | Inference complete | predicted_defaults=6645 / 29734 (22.35%)
+2026-08-09 08:09:30 | INFO     | __main__:61 | Batch prediction inference complete.
+2026-08-09 08:09:36 | INFO     | __main__:191 | Report generation pipeline started.
+2026-08-09 08:09:37 | INFO     | __main__:216 | Generating report for: Logistic Regression
+2026-08-09 08:09:37 | INFO     | src.versioning:247 | Loaded champion 'logistic_regression' v4 from 'D:\VSCode_Projects\Projects\models\registry\logistic_regression\logistic_regression_v4.joblib'
+2026-08-09 08:09:37 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:09:37 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.4062 | predicted_defaults=7349
+2026-08-09 08:09:37 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\logistic_regression\metrics.json'
+2026-08-09 08:09:38 | DEBUG    | src.plots:132 | Saved ROC curve → D:\VSCode_Projects\Projects\reports\models\logistic_regression\figures\roc_curve.png
+2026-08-09 08:09:39 | DEBUG    | src.plots:180 | Saved PR curve → D:\VSCode_Projects\Projects\reports\models\logistic_regression\figures\pr_curve.png
+2026-08-09 08:09:39 | DEBUG    | src.plots:220 | Saved confusion matrix → D:\VSCode_Projects\Projects\reports\models\logistic_regression\figures\confusion_matrix.png
+2026-08-09 08:09:39 | INFO     | __main__:177 | [Logistic Regression] ROC-AUC=0.8459 | PR-AUC=0.7712 | Accuracy=0.8305 | F1=0.6565
+2026-08-09 08:09:39 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:09:39 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.4062 | predicted_defaults=7349
+2026-08-09 08:09:39 | INFO     | __main__:216 | Generating report for: Random Forest
+2026-08-09 08:09:39 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v4 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v4.joblib'
+2026-08-09 08:09:40 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:09:40 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:09:40 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\random_forest\metrics.json'
+2026-08-09 08:09:41 | DEBUG    | src.plots:132 | Saved ROC curve → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\roc_curve.png
+2026-08-09 08:09:42 | DEBUG    | src.plots:180 | Saved PR curve → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\pr_curve.png
+2026-08-09 08:09:42 | DEBUG    | src.plots:220 | Saved confusion matrix → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\confusion_matrix.png
+2026-08-09 08:09:44 | DEBUG    | src.plots:273 | Saved feature importance → D:\VSCode_Projects\Projects\reports\models\random_forest\figures\feature_importance.png
+2026-08-09 08:09:44 | INFO     | __main__:177 | [Random Forest] ROC-AUC=0.8863 | PR-AUC=0.8284 | Accuracy=0.8727 | F1=0.7291
+2026-08-09 08:09:44 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:09:44 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3915 | predicted_defaults=6645
+2026-08-09 08:09:44 | INFO     | __main__:216 | Generating report for: XGBoost
+2026-08-09 08:09:44 | INFO     | src.versioning:247 | Loaded champion 'xgboost' v4 from 'D:\VSCode_Projects\Projects\models\registry\xgboost\xgboost_v4.joblib'
+2026-08-09 08:09:44 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:09:44 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3656 | predicted_defaults=6868
+2026-08-09 08:09:45 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\xgboost\metrics.json'
+2026-08-09 08:09:45 | DEBUG    | src.plots:132 | Saved ROC curve → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\roc_curve.png
+2026-08-09 08:09:46 | DEBUG    | src.plots:180 | Saved PR curve → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\pr_curve.png
+2026-08-09 08:09:46 | DEBUG    | src.plots:220 | Saved confusion matrix → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\confusion_matrix.png
+2026-08-09 08:09:47 | DEBUG    | src.plots:273 | Saved feature importance → D:\VSCode_Projects\Projects\reports\models\xgboost\figures\feature_importance.png
+2026-08-09 08:09:47 | INFO     | __main__:177 | [XGBoost] ROC-AUC=0.8953 | PR-AUC=0.8459 | Accuracy=0.8803 | F1=0.7492
+2026-08-09 08:09:47 | DEBUG    | src.modeling.predict:95 | Running inference on 29734 samples with threshold=0.50
+2026-08-09 08:09:47 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.3656 | predicted_defaults=6868
+2026-08-09 08:09:47 | INFO     | __main__:243 | Generating cross-model comparison figures...
+2026-08-09 08:09:47 | INFO     | __main__:103 | Metrics saved → 'D:\VSCode_Projects\Projects\reports\models\comparison\all_models_metrics.json'
+2026-08-09 08:09:48 | DEBUG    | src.plots:333 | Saved ROC comparison → D:\VSCode_Projects\Projects\reports\models\comparison\figures\roc_curve_comparison.png
+2026-08-09 08:09:49 | DEBUG    | src.plots:380 | Saved PR comparison → D:\VSCode_Projects\Projects\reports\models\comparison\figures\pr_curve_comparison.png
+2026-08-09 08:09:50 | DEBUG    | src.plots:458 | Saved metrics comparison bar chart → D:\VSCode_Projects\Projects\reports\models\comparison\figures\metrics_comparison_bar.png
+2026-08-09 08:09:50 | INFO     | __main__:290 | Report generation complete.
+2026-08-09 08:09:55 | INFO     | __main__:153 | CLI API inference started.
+2026-08-09 08:09:55 | DEBUG    | src.features:73 | Starting feature engineering | input shape=(1, 23)
+2026-08-09 08:09:55 | DEBUG    | src.features:80 | Dropped columns: ['ID']
+2026-08-09 08:09:55 | DEBUG    | src.features:88 | Flag 'property_value_isna' created | 1 missing (100.0%)
+2026-08-09 08:09:55 | DEBUG    | src.features:88 | Flag 'dtir1_isna' created | 1 missing (100.0%)
+2026-08-09 08:09:55 | DEBUG    | src.features:98 | Feature 'DTI_x_LTV' created.
+2026-08-09 08:09:55 | DEBUG    | src.features:105 | Feature 'loan_to_income' created.
+2026-08-09 08:09:55 | INFO     | src.features:107 | Feature engineering complete | output shape=(1, 26)
+2026-08-09 08:09:55 | INFO     | src.features:273 | Fitted preprocessor loaded from 'D:\VSCode_Projects\Projects\models\preprocessor.joblib'
+2026-08-09 08:09:55 | INFO     | src.modeling.predict:67 | Loading champion model: 'random_forest'
+2026-08-09 08:09:55 | INFO     | src.versioning:247 | Loaded champion 'random_forest' v4 from 'D:\VSCode_Projects\Projects\models\registry\random_forest\random_forest_v4.joblib'
+2026-08-09 08:09:56 | DEBUG    | src.modeling.predict:95 | Running inference on 1 samples with threshold=0.50
+2026-08-09 08:09:56 | DEBUG    | src.modeling.predict:103 | Inference complete | mean_prob=0.8634 | predicted_defaults=1
+2026-08-09 08:09:56 | INFO     | __main__:135 | Application scored | prob=0.8634 | recommendation=REJECT / HIGH RISK
+2026-08-09 08:09:56 | INFO     | __main__:167 | CLI API inference complete.
