@@ -574,3 +574,68 @@ ValueError: columns are missing: {'age'}
 2026-08-09 10:30:59 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=1.1ms
 2026-08-09 10:30:59 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.9ms
 2026-08-09 10:30:59 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.9ms
+2026-08-14 21:14:57 | INFO     | __main__:454 | Starting Flask API on http://0.0.0.0:5000 (debug=False)
+2026-08-14 21:14:57 | INFO     | __main__:62 | Loading champion model 'random_forest' into memory cache...
+2026-08-14 21:14:58 | INFO     | __main__:66 | Model loaded and cached successfully.
+2026-08-14 21:14:58 | INFO     | __main__:80 | Loading fitted preprocessor into memory cache...
+2026-08-14 21:14:58 | INFO     | __main__:82 | Preprocessor loaded and cached successfully.
+2026-08-14 21:15:21 | INFO     | __main__:191 | REQUEST  | method=GET    path=/health                status=200 duration=0.0ms
+2026-08-14 21:15:30 | INFO     | __main__:191 | REQUEST  | method=POST   path=/predict               status=200 duration=115.9ms
+2026-08-14 21:15:38 | INFO     | __main__:191 | REQUEST  | method=POST   path=/predict               status=200 duration=194.3ms
+2026-08-14 21:15:50 | INFO     | __main__:376 | Batch predict | total=2 | success=2 | failed=0 | 132.2ms
+2026-08-14 21:15:50 | INFO     | __main__:191 | REQUEST  | method=POST   path=/predict/batch         status=200 duration=132.2ms
+2026-08-14 21:15:55 | INFO     | __main__:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.4ms
+2026-08-14 21:16:40 | INFO     | src.flask_app:62 | Loading champion model 'random_forest' into memory cache...
+2026-08-14 21:16:40 | INFO     | src.flask_app:66 | Model loaded and cached successfully.
+2026-08-14 21:16:40 | INFO     | src.flask_app:80 | Loading fitted preprocessor into memory cache...
+2026-08-14 21:16:40 | INFO     | src.flask_app:82 | Preprocessor loaded and cached successfully.
+2026-08-14 21:17:13 | INFO     | src.flask_app:62 | Loading champion model 'random_forest' into memory cache...
+2026-08-14 21:17:13 | INFO     | src.flask_app:66 | Model loaded and cached successfully.
+2026-08-14 21:17:13 | INFO     | src.flask_app:80 | Loading fitted preprocessor into memory cache...
+2026-08-14 21:17:13 | INFO     | src.flask_app:82 | Preprocessor loaded and cached successfully.
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/health                status=200 duration=0.0ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/health                status=200 duration=0.0ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/health                status=200 duration=0.0ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=80.9ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=61.0ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=59.9ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=70.8ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=59.5ms
+2026-08-14 21:17:13 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=60.9ms
+2026-08-14 21:17:13 | WARNING  | src.flask_app:270 | Validation failed: ["Missing required field: 'loan_amount'", "Missing required field: 'LTV'", "Missing required field: 'term'", "Missing required field: 'loan_type'", "Missing required field: 'Region'"]
+2026-08-14 21:17:14 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=2 | failed=0 | 130.6ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=200 duration=130.6ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=1 | failed=1 | 71.1ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=207 duration=71.1ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=2 | failed=0 | 117.2ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=200 duration=117.2ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=2 | failed=0 | 123.7ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=200 duration=123.7ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.4ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.4ms
+2026-08-14 21:17:14 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.4ms
+2026-08-14 21:17:56 | INFO     | src.flask_app:62 | Loading champion model 'random_forest' into memory cache...
+2026-08-14 21:17:57 | INFO     | src.flask_app:66 | Model loaded and cached successfully.
+2026-08-14 21:17:57 | INFO     | src.flask_app:80 | Loading fitted preprocessor into memory cache...
+2026-08-14 21:17:57 | INFO     | src.flask_app:82 | Preprocessor loaded and cached successfully.
+2026-08-14 21:17:57 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/health                status=200 duration=0.0ms
+2026-08-14 21:17:57 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/health                status=200 duration=0.0ms
+2026-08-14 21:17:57 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/health                status=200 duration=0.0ms
+2026-08-14 21:17:57 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=129.3ms
+2026-08-14 21:17:57 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=118.8ms
+2026-08-14 21:17:57 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=120.8ms
+2026-08-14 21:17:57 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=121.2ms
+2026-08-14 21:17:58 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=124.4ms
+2026-08-14 21:17:58 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict               status=200 duration=113.6ms
+2026-08-14 21:17:58 | WARNING  | src.flask_app:270 | Validation failed: ["Missing required field: 'loan_amount'", "Missing required field: 'LTV'", "Missing required field: 'term'", "Missing required field: 'loan_type'", "Missing required field: 'Region'"]
+2026-08-14 21:17:58 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=2 | failed=0 | 229.9ms
+2026-08-14 21:17:58 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=200 duration=229.9ms
+2026-08-14 21:17:58 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=1 | failed=1 | 156.2ms
+2026-08-14 21:17:58 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=207 duration=156.2ms
+2026-08-14 21:17:58 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=2 | failed=0 | 241.0ms
+2026-08-14 21:17:58 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=200 duration=241.0ms
+2026-08-14 21:17:59 | INFO     | src.flask_app:376 | Batch predict | total=2 | success=2 | failed=0 | 228.1ms
+2026-08-14 21:17:59 | INFO     | src.flask_app:191 | REQUEST  | method=POST   path=/predict/batch         status=200 duration=228.1ms
+2026-08-14 21:17:59 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.4ms
+2026-08-14 21:17:59 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.5ms
+2026-08-14 21:17:59 | INFO     | src.flask_app:191 | REQUEST  | method=GET    path=/model/info            status=200 duration=0.5ms
