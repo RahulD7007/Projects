@@ -1,0 +1,23 @@
+# .gitignore
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Data & Models (too large for Git)
+data/raw/*
+data/processed/*
+models/*.keras
+reports/figures/*.png
+reports/*.json
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
